@@ -1,15 +1,17 @@
 const axios = require("axios");
+const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 
-async function getAllTeams(keyword) {
+async function search_team_by_name(keyword) {
     const all_teams = await axios.get(
-        `https://soccer.sportmonks.com/api/v2.0/teams/search/${keyword}`, {
+        `${api_domain}/teams/search/${keyword}`, {
             params: {
+                include: "TEAM_NAME",
                 api_token: process.env.api_token,
             },
         }
-    ).data;
-    return all_teams;
+    );
+    return all_teams.data.data;
     // next game details should come from DB
 }
 
-exports.getAllTeams = getAllTeams;
+exports.search_team_by_name = search_team_by_name;

@@ -4,6 +4,24 @@ const DButils = require("./utils/DButils");
 const players_utils = require("./utils/players_utils");
 const team_utils = require("./utils/teams_utils");
 
+
+router.get("/search", async(req, res, next) => {
+    let data = []
+    let keyword = req.query.keyword;
+    try {
+        const all_teams = await team_utils.search_team_by_name(keyword);
+        // res.send(all_teams);
+        all_teams.map((team) => data.push({
+            team_id: team.id,
+            team_name: team.name
+        }));
+        res.send(data);
+    } catch (error) {
+        next(error);
+    }
+
+});
+
 router.get("/:team_id", async(req, res, next) => {
     let team_details = [];
     try {
@@ -17,18 +35,6 @@ router.get("/:team_id", async(req, res, next) => {
     }
 });
 
-router.get("/search", async(req, res, next) => {
-    console.log('here!!!')
-        // let data = []
-        // let keyword = "mi";
-        // try {
-        //     const all_teams = await team_utils.getAllTeams(keyword);
-        //     all_teams.map((team) => data.push(team.id, team.name));
-        //     res.send(data);
-        // } catch (error) {
-        //     next(error);
-        // }
 
-});
 
 module.exports = router;

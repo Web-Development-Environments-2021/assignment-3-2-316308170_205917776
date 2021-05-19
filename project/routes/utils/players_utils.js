@@ -3,53 +3,109 @@ const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 // const TEAM_ID = "85";
 
 async function getPlayerIdsByTeam(team_id) {
-  let player_ids_list = [];
-  const team = await axios.get(`${api_domain}/teams/${team_id}`, {
-    params: {
-      include: "squad",
-      api_token: process.env.api_token,
-    },
-  });
-  team.data.data.squad.data.map((player) =>
-    player_ids_list.push(player.player_id)
-  );
-  return player_ids_list;
+    let player_ids_list = [];
+    const team = await axios.get(`${api_domain}/teams/${team_id}`, {
+        params: {
+            include: "squad",
+            api_token: process.env.api_token,
+        },
+    });
+    team.data.data.squad.data.map((player) =>
+        player_ids_list.push(player.player_id)
+    );
+    return player_ids_list;
 }
 
 async function getPlayersInfo(players_ids_list) {
-  let promises = [];
-  players_ids_list.map((id) =>
-    promises.push(
-      axios.get(`${api_domain}/players/${id}`, {
-        params: {
-          api_token: process.env.api_token,
-          include: "team",
-        },
-      })
-    )
-  );
-  let players_info = await Promise.all(promises);
-  return extractRelevantPlayerData(players_info);
+    let promises = [];
+    players_ids_list.map((id) =>
+        promises.push(
+            axios.get(`${api_domain}/players/${id}`, {
+                params: {
+                    api_token: process.env.api_token,
+                    include: "team",
+                },
+            })
+        )
+    );
+    let players_info = await Promise.all(promises);
+    return extractRelevantPlayerData(players_info);
 }
 
 function extractRelevantPlayerData(players_info) {
-  return players_info.map((player_info) => {
-    const { fullname, image_path, position_id } = player_info.data.data;
-    const { name } = player_info.data.data.team.data;
-    return {
-      name: fullname,
-      image: image_path,
-      position: position_id,
-      team_name: name,
-    };
-  });
+    return players_info.map((player_info) => {
+        const { fullname, image_path, position_id } = player_info.data.data;
+        const { name } = player_info.data.data.team.data;
+        return {
+            name: fullname,
+            image: image_path,
+            position: position_id,
+            team_name: name,
+        };
+    });
 }
 
 async function getPlayersByTeam(team_id) {
-  let player_ids_list = await getPlayerIdsByTeam(team_id);
-  let players_info = await getPlayersInfo(player_ids_list);
-  return players_info;
+    let player_ids_list = await getPlayerIdsByTeam(team_id);
+    let players_info = await getPlayersInfo(player_ids_list);
+    return players_info;
+}
+
+async function search_players_by_name(keyword) {
+    const all_teams = await axios.get(
+        `${api_domain}/players/search/${keyword}`, {
+            params: {
+                include: "PLAYER_NAME",
+                api_token: process.env.api_token,
+            },
+        }
+    );
+    return all_teams.data.data;
+    // next game details should come from DB
+}
+
+async function get_player_full_data(player_id) {
+    const player_info = (await axios.get(
+        `${api_domain}/players/${player_id}`, {
+            params: {
+                api_token: process.env.api_token
+            }
+        }
+    )).data.data;
+    const team_name = (await axios.get(
+        `${api_domain}/teams/${player_info.team_id}`, {
+            params: {
+                api_token: process.env.api_token
+            }
+        }
+    )).data.data.name;
+    return {
+        name: player_info.fullname,
+        photo_path: player_info.image_path,
+        position: player_info.position_id,
+        team_name: team_name,
+        common_name: player_info.common_name,
+        birthdate: player_info.birthdate,
+        birth_country: player_info.birth_country,
+        nationality: player_info.nationality,
+        height: player_info.height,
+        weight: player_info.weight
+    };
+}
+
+async function get_player_preview(player_id) {
+    console.log('in func')
+    let full_data = await get_player_full_data(player_id);
+    return {
+        name: full_data.name,
+        photo_path: full_data.photo_path,
+        position: full_data.position,
+        team_name: full_data.team_name
+    }
 }
 
 exports.getPlayersByTeam = getPlayersByTeam;
 exports.getPlayersInfo = getPlayersInfo;
+exports.search_players_by_name = search_players_by_name;
+exports.get_player_full_data = get_player_full_data;
+exports.get_player_preview = get_player_preview;
