@@ -11,7 +11,6 @@ async function search_coaches_by_name(keyword) {
                 api_token: process.env.api_token,
             },
         })).data.data;
-    console.log(all_teams);
     let coaches = []
     all_teams.map((team) => coaches.push({
         coach_id: team.coach.data.coach_id,
@@ -22,4 +21,43 @@ async function search_coaches_by_name(keyword) {
     // next game details should come from DB
 }
 
+async function get_coach_full_data(coach_id) {
+    const coach_info = (await axios.get(
+        `${api_domain}/coaches/${coach_id}`, {
+            params: {
+                api_token: process.env.api_token
+            }
+        }
+    )).data.data;
+    const team_name = (await axios.get(
+        `${api_domain}/teams/${coach_info.team_id}`, {
+            params: {
+                api_token: process.env.api_token
+            }
+        }
+    )).data.data.name;
+    return {
+        name: coach_info.fullname,
+        photo_path: coach_info.image_path,
+        team_name: team_name,
+        common_name: coach_info.common_name,
+        birthdate: coach_info.birthdate,
+        birth_country: coach_info.birth_country,
+        nationality: coach_info.nationality
+    };
+}
+
+async function get_coach_preview(coach_id) {
+    let full_data = await get_coach_full_data(coach_id);
+    return {
+        name: full_data.name,
+        photo_path: full_data.photo_path,
+        position: full_data.position,
+        team_name: full_data.team_name
+    }
+}
+
+
 exports.search_coaches_by_name = search_coaches_by_name;
+exports.get_coach_full_data = get_coach_full_data;
+exports.get_coach_preview = get_coach_preview;

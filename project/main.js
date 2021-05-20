@@ -78,7 +78,10 @@ app.use(function(err, req, res, next) {
 
 
 // ----> For cheking that our server is alive
-app.get("/alive", (req, res) => res.send("I'm alive"));
+app.get("/alive", (req, res) => {
+    res.send("I'm alive")
+});
+
 
 // Routings
 app.use("/users", users);
