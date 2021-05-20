@@ -5,35 +5,14 @@ const bcrypt = require("bcryptjs");
 const axios = require("axios");
 
 
-router.get("/Register", async(req, res, next) => {
-    try {
-        console.log('here1')
-        const post = await axios.post("http://localhost:3000/Register", {
-            username: 'Ariel',
-            first_name: 'Ariel',
-            last_name: 'Shilo',
-            password: 1234,
-            country: 'Israel'
-        });
-        res.send('success')
-    } catch (error) {
-        console.error(error);
-        next();
-    }
-    next();
-});
-
 router.post("/Register", async(req, res, next) => {
-    JSON.stringify(req.data);
-    console.log('here2')
     try {
-        // parameters exists
-        // valid parameters
-        // username exists
+        // get all users from the DB.
         const users = await DButils.execQuery(
             "SELECT Username FROM dbo.Users"
         );
-        if (users.find((x) => x.username === req.body.username))
+        // check for a match based on the username, if not found: return 409 status, else continue
+        if (users.find((x) => x.Username === req.body.username))
             throw { status: 409, message: "Username taken" };
 
         //hash the password
@@ -43,7 +22,7 @@ router.post("/Register", async(req, res, next) => {
         );
         req.body.password = hash_password;
 
-        // add the new username
+        // add the new user to the DB.
         await DButils.execQuery(
             `INSERT INTO dbo.Users (Username, First_name, Last_name, User_Password, Country) VALUES
              ('${req.body.username}', '${req.body.first_name}', '${req.body.last_name}', '${hash_password}', '${req.body.country}')`
@@ -58,17 +37,13 @@ router.post("/Login", async(req, res, next) => {
     try {
         const user = (
             await DButils.execQuery(
-                `SELECT * FROM dbo.users_tirgul WHERE username = '${req.body.username}'`
+                `SELECT * FROM dbo.Users WHERE username = '${req.body.username}'`
             )
-        )[0];
-        // user = user[0];
-        console.log(user);
-
+        )[0]; // user = user[0];
         // check that username exists & the password is correct
-        if (!user || !bcrypt.compareSync(req.body.password, user.password)) {
+        if (!user || !bcrypt.compareSync(req.body.password, user.User_Password)) {
             throw { status: 401, message: "Username or Password incorrect" };
         }
-
         // Set cookie
         req.session.user_id = user.user_id;
 
