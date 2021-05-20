@@ -2,16 +2,37 @@ var express = require("express");
 var router = express.Router();
 const DButils = require("../routes/utils/DButils");
 const bcrypt = require("bcryptjs");
+const axios = require("axios");
+
+
+router.get("/Register", async(req, res, next) => {
+    try {
+        console.log('here1')
+        const post = await axios.post("http://localhost:3000/Register", {
+            username: 'Ariel',
+            first_name: 'Ariel',
+            last_name: 'Shilo',
+            password: 1234,
+            country: 'Israel'
+        });
+        res.send('success')
+    } catch (error) {
+        console.error(error);
+        next();
+    }
+    next();
+});
 
 router.post("/Register", async(req, res, next) => {
+    JSON.stringify(req.data);
+    console.log('here2')
     try {
         // parameters exists
         // valid parameters
         // username exists
         const users = await DButils.execQuery(
-            "SELECT username FROM dbo.users_tirgul"
+            "SELECT Username FROM dbo.Users"
         );
-
         if (users.find((x) => x.username === req.body.username))
             throw { status: 409, message: "Username taken" };
 
@@ -24,7 +45,8 @@ router.post("/Register", async(req, res, next) => {
 
         // add the new username
         await DButils.execQuery(
-            `INSERT INTO dbo.users_tirgul (username, password) VALUES ('${req.body.username}', '${hash_password}')`
+            `INSERT INTO dbo.Users (Username, First_name, Last_name, User_Password, Country) VALUES
+             ('${req.body.username}', '${req.body.first_name}', '${req.body.last_name}', '${hash_password}', '${req.body.country}')`
         );
         res.status(201).send("user created");
     } catch (error) {
