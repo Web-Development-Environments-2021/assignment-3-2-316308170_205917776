@@ -17,19 +17,16 @@ router.get('/:match_id',async(req, res, next) => {
 });
 
 router.use(async(req, res, next) => {
-    try {
-        let user_name = req.body.user_name || req.query.user_name
-        let role = (await DButils.execQuery(
-            `SELECT User_Role FROM dbo.Users WHERE Username = '${user_name}'`
-        ))[0].User_Role;
-        if (role != 'Representative') {
-            throw 'Invalid access!'
-        }
-        next();
-    } catch {
-        console.log('in error')
-        res.status(403).send('forbidden!')
-    }
+    let user_name = req.session.user_id
+    DButils.execQuery(
+        `SELECT User_Role FROM dbo.Users WHERE Username = '${user_name}'`)[0].User_Role
+        .then((role) => {
+            if (role != 'Representative') {
+                throw 'Invalid access!'
+            }
+            next();
+        })
+        .catch((error) => res.status(403).send(error)) 
 });
 
 router.put('/',async(req, res, next) => {
