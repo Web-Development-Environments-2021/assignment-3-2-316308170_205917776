@@ -30,7 +30,7 @@ router.post("/Register", async(req, res, next) => {
              '${req.body.last_name}', 
              '${hash_password}', 
              '${req.body.country}', 
-             'user')`
+             'User')`
         );
         res.status(201).send("user created");
     } catch (error) {
