@@ -10,7 +10,7 @@ router.post("/Register", async(req, res, next) => {
         // get all users from the DB.
         const users = await DButils.execQuery(
             "SELECT Username FROM dbo.Users"
-        );
+        ).recordset;
         // check for a match based on the username, if not found: return 409 status, else continue
         if (users.find((x) => x.Username === req.body.username))
             throw { status: 409, message: "Username taken" };
@@ -43,7 +43,7 @@ router.post("/Login", async(req, res, next) => {
         const user = (
             await DButils.execQuery(
                 `SELECT * FROM dbo.Users WHERE username = '${req.body.username}'`
-            )
+            ).recordset
         )[0]; // user = user[0];
         // check that username exists & the password is correct
         if (!user || !bcrypt.compareSync(req.body.password, user.User_Password)) {

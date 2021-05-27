@@ -18,5 +18,9 @@ CREATE TABLE Users(
     User_Role VARCHAR(15)
 );
 
+CREATE TABLE Favorites(
+    Username VARCHAR(50),
+    Match_ID INTEGER
+);
 -- DROP TABLE Matches
 -- DROP TABLE Users

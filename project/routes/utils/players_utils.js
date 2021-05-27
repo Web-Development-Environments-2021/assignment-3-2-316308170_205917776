@@ -1,6 +1,7 @@
 const axios = require("axios");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
-// const TEAM_ID = "85";
+const league_utils = require("./league_utils")
+    // const TEAM_ID = "85";
 
 async function getPlayerIdsByTeam(team_id) {
     let player_ids_list = [];
@@ -52,16 +53,19 @@ async function getPlayersByTeam(team_id) {
 }
 
 async function search_players_by_name(keyword) {
-    const all_teams = await axios.get(
+    const all_teams_in_league = await league_utils.get_all_teams_in_league();
+    console.log(all_teams_in_league)
+    const all_players = (await axios.get(
         `${api_domain}/players/search/${keyword}`, {
             params: {
                 include: "PLAYER_NAME",
                 api_token: process.env.api_token,
             },
         }
-    );
-    return all_teams.data.data;
-    // next game details should come from DB
+    )).data.data;
+    console.log(all_players)
+    const filtered = all_players.filter(player => all_teams_in_league.includes(player.team_id))
+    return filtered;
 }
 
 async function get_player_full_data(player_id) {
