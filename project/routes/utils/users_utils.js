@@ -1,11 +1,17 @@
 const DButils = require("./DButils");
 
 async function markAsFavorite(user_id, favorite_id, table_name) {
-
     const result = (await DButils.execQuery(
         `INSERT INTO Favorite_${table_name} VALUES ('${user_id}','${favorite_id}')`
     )).rowsAffected[0];
-    console.log(result);
+    return result
+}
+
+async function deleteFromFavorite(user_id, not_favorite_id, table_name, attribute_ID){
+    const result = (await DButils.execQuery(
+        `DELETE FROM Favorite_${table_name} WHERE Username = '${user_id}' AND ${attribute_ID} = '${not_favorite_id}' `
+    )).rowsAffected[0];
+    return result
 }
 
 async function getFavoritePlayers(user_id) {
@@ -37,3 +43,4 @@ async function getAllFavorites(user_id, attribute_ID, table_name) {
 exports.markAsFavorite = markAsFavorite;
 exports.getFavoritePlayers = getFavoritePlayers;
 exports.getAllFavorites = getAllFavorites;
+exports.deleteFromFavorite = deleteFromFavorite;
