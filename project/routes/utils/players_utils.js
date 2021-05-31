@@ -1,20 +1,24 @@
 const axios = require("axios");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 const league_utils = require("./league_utils")
+const coach_utils = require("./coaches_utils")
     // const TEAM_ID = "85";
 
 async function getPlayerIdsByTeam(team_id) {
     let player_ids_list = [];
     const team = await axios.get(`${api_domain}/teams/${team_id}`, {
         params: {
-            include: "squad",
-            api_token: process.env.api_token,
-        },
+            include: "squad,coach",
+            // include: "coach",
+            api_token: process.env.api_token
+        }
     });
+    // console.log(team.data.data.squad)
     team.data.data.squad.data.map((player) =>
         player_ids_list.push(player.player_id)
     );
-    return player_ids_list;
+    console.log(team.data.data.coach.data.coach_id);
+    return [player_ids_list, team.data.data.coach.data.coach_id];
 }
 
 async function getPlayersInfo(players_ids_list) {
@@ -29,11 +33,14 @@ async function getPlayersInfo(players_ids_list) {
             })
         )
     );
-    let players_info = await Promise.all(promises);
+    // console.log(players_ids_list);
+    const players_info = await Promise.all(promises);
+    // console.log(players_info);
     return extractRelevantPlayerData(players_info);
 }
 
 function extractRelevantPlayerData(players_info) {
+    // console.log(players_info);
     return players_info.map((player_info) => {
         const { fullname, image_path, position_id } = player_info.data.data;
         const { name } = player_info.data.data.team.data;
@@ -47,9 +54,11 @@ function extractRelevantPlayerData(players_info) {
 }
 
 async function getPlayersByTeam(team_id) {
-    let player_ids_list = await getPlayerIdsByTeam(team_id);
-    let players_info = await getPlayersInfo(player_ids_list);
-    return players_info;
+    let team_ids_list = await getPlayerIdsByTeam(team_id);
+    let team_info = await getPlayersInfo(team_ids_list[0]);
+    let coach_info = await coach_utils.get_coach_preview(team_ids_list[1]);
+    team_info.push(coach_info)
+    return team_info;
 }
 
 async function search_players_by_name(keyword) {

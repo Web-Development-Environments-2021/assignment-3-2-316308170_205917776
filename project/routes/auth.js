@@ -29,7 +29,8 @@ router.post("/Register", async(req, res, next) => {
              '${req.body.first_name}', 
              '${req.body.last_name}', 
              '${hash_password}', 
-             '${req.body.country}', 
+             '${req.body.country}',
+             '${req.body.email}', 
              'User')`
         );
         res.status(201).send("user created");

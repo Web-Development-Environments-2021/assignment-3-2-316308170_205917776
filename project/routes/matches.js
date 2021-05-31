@@ -54,7 +54,7 @@ router.post('/', async(req, res, next) => {
         const match = (await DButils.execQuery(
             "SELECT TOP 1 Match_ID FROM dbo.Matches ORDER BY Match_ID DESC"
         )).recordset[0] || 0
-        const match_id = (match) ? match.Match_ID + 1: match
+        const match_id = (match) ? match.Match_ID + 1 : match
         const query = await DButils.execQuery(
             `INSERT INTO dbo.Matches (Match_ID, Home_Team_ID, Away_Team_ID, Referee_ID, Match_Date, Stadium, Stage)
          VALUES ('${match_id}','${req.body.home_team_id}',
@@ -62,7 +62,8 @@ router.post('/', async(req, res, next) => {
          '${req.body.referee_id}',
          '${req.body.date}',
          '${req.body.stadium}',
-         '${req.body.stage}')`
+         '${req.body.stage}',
+         '${req.body.ref_id}')`
         ).recordset
         res.status(201).send("match created");
 
@@ -82,8 +83,6 @@ router.delete('/:match_id', async(req, res, next) => {
         })
         .catch((err) => next(err))
 });
-
-
 
 
 module.exports = router;
