@@ -41,7 +41,7 @@ router.post("/favoriteMatches", async(req, res, next) => {
     if (status == 0)
         res.status(404).send('no favorite matches')
     else
-        res.status(200).send('successfully added match to favorites!')
+        res.status(201).send('successfully added match to favorites!')
 })
 
 router.delete("/favoriteMatches/:match_id", async(req, res ,next) => {
@@ -74,7 +74,7 @@ router.post("/favoritePlayers", async(req, res, next) => {
     if (status == 0)
         res.status(404).send('no favorite players')
     else
-        res.status(200).send('successfully added player to favorites!')
+        res.status(201).send('successfully added player to favorites!')
 })
 
 router.delete("/favoritePlayer/:player_id", async(req, res ,next) => {
@@ -106,7 +106,7 @@ router.post("/favoriteTeams", async(req, res, next) => {
     if (status == 0)
         res.status(404).send('no favorite teams')
     else
-        res.status(200).send('successfully added team to favorites!')
+        res.status(201).send('successfully added team to favorites!')
 })
 
 router.delete("/favoriteTeams/:team_id", async(req, res ,next) => {
@@ -120,36 +120,5 @@ router.delete("/favoriteTeams/:team_id", async(req, res ,next) => {
     else
         res.status(200).send('successfully deleted team from favorites!')
 })
-
-/**
- * This path gets body with playerId and save this player in the favorites list of the logged-in user
- */
-// router.post("/favoritePlayers", async(req, res, next) => {
-//     try {
-//         const user_id = req.session.user_id;
-//         const player_id = req.body.playerId;
-//         await users_utils.markPlayerAsFavorite(user_id, player_id);
-//         res.status(201).send("The player successfully saved as favorite");
-//     } catch (error) {
-//         next(error);
-//     }
-// });
-
-// /**
-//  * This path returns the favorites players that were saved by the logged-in user
-//  */
-// router.get("/favoritePlayers", async(req, res, next) => {
-//     try {
-//         const user_id = req.session.user_id;
-//         let favorite_players = {};
-//         const player_ids = await users_utils.getFavoritePlayers(user_id);
-//         let player_ids_array = [];
-//         player_ids.map((element) => player_ids_array.push(element.player_id)); //extracting the players ids into array
-//         const results = await players_utils.getPlayersInfo(player_ids_array);
-//         res.status(200).send(results);
-//     } catch (error) {
-//         next(error);
-//     }
-// });
 
 module.exports = router;
