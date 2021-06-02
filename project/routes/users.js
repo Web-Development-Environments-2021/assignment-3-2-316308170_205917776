@@ -51,7 +51,8 @@ router.post("/favoriteMatches", async(req, res, next) => {
         const user_id = req.session.user_id || 'Ariel'
         const match_id = req.body.match_id;
         const table_name = "Matches"
-        const status = await users_utils.markAsFavorite(user_id, match_id, table_name)
+        const attribute_ID = "Match_ID"
+        const status = await users_utils.markAsFavorite(user_id, match_id, table_name,attribute_ID)
         if (status == 0)
             res.status(404).send('no favorite matches')
         else
@@ -99,7 +100,8 @@ router.post("/favoritePlayers", async(req, res, next) => {
         const user_id = req.session.user_id || 'Ariel'
         const player_id = req.body.player_id;
         const table_name = "Players"
-        const status = await users_utils.markAsFavorite(user_id, player_id, table_name)
+        const attribute_ID = "Player_ID"
+        const status = await users_utils.markAsFavorite(user_id, player_id, table_name,attribute_ID)
         if (status == 0)
             res.status(404).send('no favorite players')
         else
@@ -146,7 +148,8 @@ router.post("/favoriteTeams", async(req, res, next) => {
         const user_id = req.session.user_id || 'Ariel'
         const team_id = req.body.team_id;
         const table_name = "Teams"
-        const status = await users_utils.markAsFavorite(user_id, team_id, table_name)
+        const attribute_ID = "Team_ID"
+        const status = await users_utils.markAsFavorite(user_id, team_id, table_name,attribute_ID)
         if (status == 0)
             res.status(404).send('no favorite teams')
         else
