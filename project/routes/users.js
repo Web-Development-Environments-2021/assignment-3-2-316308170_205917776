@@ -26,12 +26,21 @@ router.use(async function(req, res, next) {
 
 router.get("/favoriteMatches", async(req, res, next) => {
     try {
-        const user_id = req.session.user_id || 'Ariel'
-        const favorites = await users_utils.getAllFavorites(user_id, "Match_ID", "Matches");
-        if (favorites.length == 0)
+        const user_id = req.session.user_id || 'Gal'
+        const favorites_ids = await users_utils.getAllFavorites(user_id, "Match_ID", "Matches");
+        const promises = []
+        favorites_ids.map((favorite) => {
+            promises.push(DButils.execQuery(
+                `SELECT * FROM dbo.Matches WHERE Match_ID='${favorite}'`
+            ))
+        })
+        let favorites_data = await Promise.all(promises);
+        final_data = []
+        favorites_data.map((match) => final_data.push(match.recordset[0]))
+        if (final_data.length == 0)
             res.status(404).send('no favorite matches')
         else
-            res.status(200).send(favorites)
+            res.status(200).send(final_data)
     } catch (error) {
         next(error);
     }
@@ -73,10 +82,13 @@ router.get("/favoritePlayers", async(req, res, next) => {
     try {
         const user_id = req.session.user_id || 'Ariel'
         const favorites = await users_utils.getAllFavorites(user_id, "Player_ID", "Players");
-        if (favorites.length == 0)
+        const promises = []
+        favorites.map((player) => promises.push(players_utils.get_player_preview(player)));
+        let final_data = await Promise.all(promises);
+        if (final_data.length == 0)
             res.status(404).send('no favorite players')
         else
-            res.status(200).send(favorites)
+            res.status(200).send(final_data)
     } catch (error) {
         next(error);
     }
@@ -117,10 +129,13 @@ router.get("/favoriteTeams", async(req, res, next) => {
     try {
         const user_id = req.session.user_id || 'Ariel'
         const favorites = await users_utils.getAllFavorites(user_id, "Team_ID", "Teams");
-        if (favorites.length == 0)
+        const promises = []
+        favorites.map((player) => promises.push(players_utils.get_player_preview(player)));
+        let final_data = await Promise.all(promises);
+        if (final_data.length == 0)
             res.status(404).send('no favorite teams')
         else
-            res.status(200).send(favorites)
+            res.status(200).send(final_data)
     } catch (error) {
         next(error);
     }
@@ -151,7 +166,7 @@ router.delete("/favoriteTeams/:team_id", async(req, res, next) => {
         if (status == 0)
             res.status(404).send('no favorite team')
         else
-            res.status(200).send('successfully deleted team from favorites!') 
+            res.status(200).send('successfully deleted team from favorites!')
     } catch (error) {
         next(error);
     }
