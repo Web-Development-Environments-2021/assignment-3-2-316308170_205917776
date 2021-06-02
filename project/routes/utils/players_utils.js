@@ -57,8 +57,7 @@ async function getPlayersByTeam(team_id) {
     let team_ids_list = await getPlayerIdsByTeam(team_id);
     let team_info = await getPlayersInfo(team_ids_list[0]);
     let coach_info = await coach_utils.get_coach_preview(team_ids_list[1]);
-    team_info.push(coach_info)
-    return team_info;
+    return [team_info,coach_info];
 }
 
 async function search_players_by_name(keyword) {

@@ -23,13 +23,22 @@ router.get("/search", async(req, res, next) => {
 });
 
 router.get("/:team_id", async(req, res, next) => {
-    let team_details = [];
     try {
+        let result = {team:[],coach:[],matches:[]};
         const team_details = await players_utils.getPlayersByTeam(
             req.params.team_id
         );
-        //we should keep implementing team page.....
-        res.send(team_details);
+        if (req.query.include == "matches"){
+            const matches = (await DButils.execQuery(
+                `SELECT * FROM dbo.Matches
+                 WHERE Home_Team_ID = '${req.params.team_id}'
+                 OR Away_Team_ID = '${req.params.team_id}'`
+            )).recordsets[0]
+            result.matches = matches;
+        }
+        result.team = team_details[0];
+        result.coach = team_details[1];
+        res.send(result);
     } catch (error) {
         next(error);
     }

@@ -36,6 +36,12 @@ router.use(async(req, res, next) => {
 
 router.put('/', async(req, res, next) => {
     try {
+        if (req.body.finished){
+            const deleted = await DButils.execQuery(
+                `DELETE FROM dbo.Favorite_Matches 
+                WHERE Match_ID = '${req.body.match_id}'`
+            )
+        }
         const query = await DButils.execQuery(
             `UPDATE dbo.Matches SET 
             Score = '${req.body.score}',
@@ -51,22 +57,24 @@ router.put('/', async(req, res, next) => {
 
 router.post('/', async(req, res, next) => {
     try {
-        const match = (await DButils.execQuery(
+        DButils.execQuery(
             "SELECT TOP 1 Match_ID FROM dbo.Matches ORDER BY Match_ID DESC"
-        )).recordset[0] || 0
-        const match_id = (match) ? match.Match_ID + 1 : match
-        const query = await DButils.execQuery(
-            `INSERT INTO dbo.Matches (Match_ID, Home_Team_ID, Away_Team_ID, Referee_ID, Match_Date, Stadium, Stage)
-         VALUES ('${match_id}','${req.body.home_team_id}',
-         '${req.body.away_team_id}',
-         '${req.body.referee_id}',
-         '${req.body.date}',
-         '${req.body.stadium}',
-         '${req.body.stage}',
-         '${req.body.ref_id}')`
-        ).recordset
-        res.status(201).send("match created");
-
+        )
+        .then((match) => {
+            match = match.recordset[0] || 0
+            const match_id = (match) ? match.Match_ID + 1 : match;
+            DButils.execQuery(
+                `INSERT INTO dbo.Matches (Match_ID, Home_Team_ID, Away_Team_ID, Referee_ID, Match_Date, Stadium, Stage)
+                VALUES ('${match_id}',
+                '${req.body.home_team_id}',
+                '${req.body.away_team_id}',
+                '${req.body.referee_id}',
+                '${req.body.date}',
+                '${req.body.stadium}',
+                '${req.body.stage}')`)
+            .then(() => {res.status(201).send("match created")})
+            .catch((error)=>{next(error)})
+        })
     } catch (error) {
         next(error);
     }
