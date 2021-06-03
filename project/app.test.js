@@ -5,17 +5,17 @@ jest.setTimeout(10000)
 
 let server = supertest(app);
 
-// beforeEach((done) => {
-//     server = app.listen(4000, (err) => {
-//       if (err) return done(err);
-//        agent = request.agent(server); // since the application is already listening, it should use the allocated port
-//        done();
-//     });
-// });
+beforeEach((done) => {
+    server = app.listen(4000, (err) => {
+      if (err) return done(err);
+       agent = request.agent(server); // since the application is already listening, it should use the allocated port
+       done();
+    });
+});
 
-// afterEach((done) => {
-//   return  server && server.close(done);
-// });
+afterEach((done) => {
+  return  server && server.close(done);
+});
 
 
 

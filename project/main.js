@@ -97,9 +97,9 @@ app.use(auth);
 
 
 
-app.listen(port, () => {
-    console.log(`Server listen on port ${port}`);
-});
+// app.listen(port, () => {
+//     console.log(`Server listen on port ${port}`);
+// });
 
 module.exports = app;
 

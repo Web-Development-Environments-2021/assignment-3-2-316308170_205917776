@@ -3,7 +3,7 @@ node_js:
   - "stable"
 cache: npm
 script:
-  - npm run travis
+  - npm run test
 install:
   - npm ci
 before_deploy:
