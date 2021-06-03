@@ -2,12 +2,16 @@ language: node_js
 node_js:
   - "stable"
 cache: npm
+script:
+  - npm run travis
+before_deploy:
+  - git config --local user.name "isgales"
+  - git config --local user.email "alkalayg@post.bgu.ac.il"
+
+
 install:
   - npm ci
 
-script:
-  - npm test
-  - npm run build
 
 #deploy:
 

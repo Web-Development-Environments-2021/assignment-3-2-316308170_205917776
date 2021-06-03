@@ -26,6 +26,8 @@ exports.execQuery = async function(query) {
     }
 };
 
+module.exports = pool;
+
 // process.on("SIGINT", function () {
 //   if (pool) {
 //     pool.close(() => console.log("connection pool closed"));
