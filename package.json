@@ -15,12 +15,13 @@
     "yargs": "^17.0.1"
   },
   "devDependencies": {
-    "jest": "^27.0.3",
+    "jest" : "^27.0.3",
     "supertest": "^6.1.3"
   },
+  
   "scripts": {
     "start": "node ./project/main.js",
-    "test": "jest --watchALL"
+    "test": "jest --watchALL --detectOpenHandles"
   },
   "repository": {
     "type": "git",
