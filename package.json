@@ -22,7 +22,7 @@
   "scripts": {
     "start": "node ./project/main.js",
     "test": "jest --watchALL --detectOpenHandles",
-    "travis":"node app.test.js"
+    "travis":"node ./project/app.test.js"
   },
   "repository": {
     "type": "git",
