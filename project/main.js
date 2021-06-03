@@ -57,6 +57,7 @@ const matches = require("./routes/matches")
 const referees = require("./routes/referees")
     //#endregion
 
+
 //#region cookie middleware
 app.use(function(req, res, next) {
     if (req.session && req.session.user_id) {
@@ -74,6 +75,7 @@ app.use(function(req, res, next) {
 });
 //#endregion
 
+
 app.use(function(err, req, res, next) {
     res.status(err.status || 500).send(err.message);
 });
@@ -86,6 +88,7 @@ app.get("/alive", (req, res) => {
 
 
 // Routings
+
 app.use("/users", users);
 app.use("/league", league);
 app.use("/teams", teams);

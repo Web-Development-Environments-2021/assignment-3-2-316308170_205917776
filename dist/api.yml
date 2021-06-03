@@ -5,7 +5,6 @@ info:
   description: 'API for assignment 3.1'
   
 tags: 
-  - name: auth
   - name: league
   - name: matches
   - name: users
@@ -14,10 +13,8 @@ tags:
   - name: teams
   
 paths:
-  /auth/Login:
+  /Login:
     post:
-      tags:
-        - auth
       summary: Logs into an user given an ID and password.
       description: 'user logs in using username and password.'
       requestBody:
@@ -34,20 +31,16 @@ paths:
           description: 'successful log in.'
         '401':
           description: 'username or password incorrect.'
-  /auth/Logout:
+  /Logout:
     post:
-      tags: 
-      - auth
       summary: User logs out from the system.
       responses:
         '200':
           description: 'successful log out.'
         '401':
           description: 'log out failed.'
-  /auth/Register:
+  /Register:
     post:
-      tags:
-        - auth
       summary: Register a new user
       requestBody:
         required: true
@@ -486,11 +479,11 @@ components:
           description: 'using only letters'
           example: shiloari
           
-        firstname:
+        first_name:
           type: string
           example: Ariel
         
-        lastname:
+        last_name:
           type: string
           example: Shilo
           

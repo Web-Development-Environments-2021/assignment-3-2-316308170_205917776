@@ -30,12 +30,11 @@ router.use(async(req, res, next) => {
             })
             .catch((error) => res.status(403).send(error))
     } else {
-        next();
+        res.sendStatus(401);
     }
 });
 
 router.get('/all_matches', async(req, res, next) => {
-    console.log('e');
     try {
         const all_matches = (await DButils.execQuery(
             `SELECT * FROM dbo.Matches`

@@ -8,23 +8,21 @@ const axios = require("axios");
 router.post("/Register", async(req, res, next) => {
     try {
         // get all users from the DB.
-        const users = await DButils.execQuery(
+        const users = (await DButils.execQuery(
             "SELECT Username FROM dbo.Users"
-        ).recordset;
+        )).recordset;
         // check for a match based on the username, if not found: return 409 status, else continue
         if (users.find((x) => x.Username === req.body.username))
             throw { status: 409, message: "Username taken" };
-
         //hash the password
         let hash_password = bcrypt.hashSync(
             req.body.password,
             parseInt(process.env.bcrypt_saltRounds)
         );
-        req.body.password = hash_password;
-
+        req.body.password = hash_password;  
         // add the new user to the DB.
         await DButils.execQuery(
-            `INSERT INTO dbo.Users (Username, First_name, Last_name, User_Password, Country, User_Role) VALUES
+            `INSERT INTO dbo.Users (Username, First_name, Last_name, User_Password, Country,Email, User_Role) VALUES
              ('${req.body.username}', 
              '${req.body.first_name}', 
              '${req.body.last_name}', 
