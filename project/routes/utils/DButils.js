@@ -26,7 +26,6 @@ exports.execQuery = async function(query) {
     }
 };
 
-module.exports = pool;
 
 // process.on("SIGINT", function () {
 //   if (pool) {

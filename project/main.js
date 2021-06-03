@@ -97,11 +97,11 @@ app.use(auth);
 
 
 
-// app.listen(port, () => {
-//     console.log(`Server listen on port ${port}`);
-// });
+const server = app.listen(port, () => {
+    console.log(`Server listen on port ${port}`);
+});
 
-module.exports = app;
+
 
 // process.on("SIGINT", function () {
 //   if (server) {
