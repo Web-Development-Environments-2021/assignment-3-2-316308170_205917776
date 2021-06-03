@@ -34,9 +34,22 @@ router.use(async(req, res, next) => {
     }
 });
 
+router.get('/all_matches', async(req, res, next) => {
+    console.log('e');
+    try {
+        const all_matches = (await DButils.execQuery(
+            `SELECT * FROM dbo.Matches`
+        )).recordset;
+        console.log(all_matches);
+        res.status(200).send(all_matches)
+    } catch (error) {
+        next(error);
+    }
+})
+
 router.put('/', async(req, res, next) => {
     try {
-        if (req.body.finished){
+        if (req.body.finished) {
             const deleted = await DButils.execQuery(
                 `DELETE FROM dbo.Favorite_Matches 
                 WHERE Match_ID = '${req.body.match_id}'`
@@ -58,13 +71,13 @@ router.put('/', async(req, res, next) => {
 router.post('/', async(req, res, next) => {
     try {
         DButils.execQuery(
-            "SELECT TOP 1 Match_ID FROM dbo.Matches ORDER BY Match_ID DESC"
-        )
-        .then((match) => {
-            match = match.recordset[0] || 0
-            const match_id = (match) ? match.Match_ID + 1 : match;
-            DButils.execQuery(
-                `INSERT INTO dbo.Matches (Match_ID, Home_Team_ID, Away_Team_ID, Referee_ID, Match_Date, Stadium, Stage)
+                "SELECT TOP 1 Match_ID FROM dbo.Matches ORDER BY Match_ID DESC"
+            )
+            .then((match) => {
+                match = match.recordset[0] || 0
+                const match_id = (match) ? match.Match_ID + 1 : match;
+                DButils.execQuery(
+                        `INSERT INTO dbo.Matches (Match_ID, Home_Team_ID, Away_Team_ID, Referee_ID, Match_Date, Stadium, Stage)
                 VALUES ('${match_id}',
                 '${req.body.home_team_id}',
                 '${req.body.away_team_id}',
@@ -72,9 +85,9 @@ router.post('/', async(req, res, next) => {
                 '${req.body.date}',
                 '${req.body.stadium}',
                 '${req.body.stage}')`)
-            .then(() => {res.status(201).send("match created")})
-            .catch((error)=>{next(error)})
-        })
+                    .then(() => { res.status(201).send("match created") })
+                    .catch((error) => { next(error) })
+            })
     } catch (error) {
         next(error);
     }

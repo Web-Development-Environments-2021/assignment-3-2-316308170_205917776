@@ -109,12 +109,7 @@ paths:
         '404':
           description: 'data not found.'
   /users/favoriteMatches/{match_id}:
-    delete:
-      tags: 
-        - users
-      summary: delete match from favorites.
-      description: 'delete match from user's favorites given its id'
-      parameters:
+    parameters:
         - name: match_id
           required: true
           in: path
@@ -122,6 +117,11 @@ paths:
           schema:
             type: integer
             example: 8
+    delete:
+      tags: 
+        - users
+      summary: delete match from favorites.
+      description: delete match from user's favorites given its id
       responses:
         '200':
           description: 'successful deleted match id from favorites.'
@@ -164,7 +164,7 @@ paths:
       tags: 
         - users
       summary: delete player from favorites.
-      description: 'delete player from user's favorites given its id'
+      description: delete player from user's favorites given its id
       parameters:
         - name: player_id
           required: true
@@ -179,252 +179,301 @@ paths:
         '404':
           description: 'data not found.'
 
-
-
-
-
-    /matches:
-      put:
-        tags:
-          - matches
-        summary: Update match results.
-        description: Get match ID and update values in match
-        requestBody:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/update_match'
-        responses:
-          '201':
-            description: 'Match updated.'
-          '400':
-            description: 'Wrong input.'
-      post:
-        tags:
-          - matches
-        summary: Create a match.
-        description: Set a new match.
-        requestBody:
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/new_match'
-        responses:
-          '201':
-            description: 'created game'
-          '404':
-            description: 'match not found'
-            
-    /matches/{match_id}:
-      get:
-        tags:
-          - matches
-        summary: Returns match details given it's ID.
-        description: 'user provides match id and get all relevant info.'
-        parameters:
-          - name: match_id
-            required: true
-            in: path
-            schema:
-              type: integer
-        responses:
-          '200':
-            description: 'successful fetched match info.'
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/game_details'
-          '404':
-            description: 'game data not found.'
-      delete:
-        tags:
-          - matches
-        summary: Delete a match.
-        description: 'delete match from system.'
-        parameters:
-          - name: match_id
-            required: true
-            in: path
-            schema:
-              type: integer
-        responses:
-          '200':
-            description: 'successful deleted match.'
-          '404':
-            description: 'match doesnt found.'      
-
-    /players/{player_id}/preview:
-      get:
-        tags:
-          - players
-        summary: Returns players preview given it's ID.
-        description: 'user provides player id and get its preview info.'
-        parameters:
-          - name: player_id
-            required: true
-            in: path
-            schema:
-              type: integer
-        responses:
-          '200':
-            description: 'successful fetched player preview.'
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/player_preview'
-          '404':
-            description: 'player preview not found.'  
-    /players/{player_id}/full_data:
+  /users/favoriteTeams:
         get:
-          tags:
-            - players
-          summary: Returns players full data given it's ID.
-          description: 'user provides player id and get its full info.'
-          parameters:
-            - name: player_id
-              required: true
-              in: path
-              schema:
-                type: integer
+          tags: 
+            - users
+          summary: Returns all user's favorite teams.
+          description: 'returns array of all favorite teams ids'
           responses:
             '200':
-              description: 'successful fetched player full info.'
+              description: 'successful fetched all favourite teams ids.'
               content:
                 application/json:
                   schema:
-                    $ref: '#/components/schemas/player_full_data'
+                    $ref: '#/components/schemas/favourite_teams'
             '404':
-              description: 'player preview not found.'  
-              
-    /coaches/{coach_id}/preview:
-      get:
-        tags:
-          - coaches
-        summary: Returns coaches preview given it's ID.
-        description: 'user provides coach id and get its preview info.'
-        parameters:
-          - name: coach_id
+              description: 'data not found.'
+        post:
+          tags: 
+            - users
+          summary: Add team to favorites.
+          description: 'add team to user favourites list.'
+          requestBody:
             required: true
-            in: path
-            schema:
-              type: integer
-        responses:
-          '200':
-            description: 'successful fetched coach preview.'
             content:
               application/json:
                 schema:
-                  $ref: '#/components/schemas/coach_preview'
-          '404':
-            description: 'coach preview not found.'  
-    /coaches/{coach_id}/full_data:
-      get:
-        tags:
-          - coaches
-        summary: Returns coaches full data given it's ID.
-        description: 'user provides coach id and get its full info.'
+                  $ref: '#/components/schemas/favourite_add_team'
+          responses:
+            '201':
+              description: 'succesfully added team to favourites.'
+            '404':
+              description: 'data not found.'
+  /users/favoriteTeams/{team_id}:
+      delete:
+        tags: 
+          - users
+        summary: delete team from favorites.
+        description: delete team from user's favorites given its id
         parameters:
-          - name: coach_id
+          - name: team_id
             required: true
             in: path
+            description: 'team id'
             schema:
               type: integer
+              example: 8
         responses:
           '200':
-            description: 'successful fetched coach full data.'
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/coach_full_data'
+            description: 'successful deleted team id from favorites.'
           '404':
-            description: 'player preview not found.'  
-    /teams/{team_id}:
-      get:
-        tags:
-        - teams
-        summary: Return team data
-        description: 'provide team id, get all players, history, etc.'
-        parameters:
-        - name: team_id
+            description: 'data not found.'
+
+
+  /matches:
+    put:
+      tags:
+        - matches
+      summary: Update match results.
+      description: Get match ID and update values in match
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update_match'
+      responses:
+        '201':
+          description: 'Match updated.'
+        '400':
+          description: 'Wrong input.'
+    post:
+      tags:
+        - matches
+      summary: Create a match.
+      description: Set a new match.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/new_match'
+      responses:
+        '201':
+          description: 'created game'
+        '404':
+          description: 'match not found'       
+  /matches/{match_id}:
+    get:
+      tags:
+        - matches
+      summary: Returns match details given it's ID.
+      description: 'user provides match id and get all relevant info.'
+      parameters:
+        - name: match_id
           required: true
           in: path
           schema:
             type: integer
-              
-        responses:
-          '200':
-            description: 'successful fetched team.'
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/team_data'
-          '404':
-            description: 'team not found.'  
+      responses:
+        '200':
+          description: 'successful fetched match info.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/game_details'
+        '404':
+          description: 'game data not found.'
+    delete:
+      tags:
+        - matches
+      summary: Delete a match.
+      description: 'delete match from system.'
+      parameters:
+        - name: match_id
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'successful deleted match.'
+        '404':
+          description: 'match doesnt found.'      
+
+  /players/{player_id}/preview:
+    get:
+      tags:
+        - players
+      summary: Returns players preview given it's ID.
+      description: 'user provides player id and get its preview info.'
+      parameters:
+        - name: player_id
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'successful fetched player preview.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/player_preview'
+        '404':
+          description: 'player preview not found.'  
+  /players/{player_id}/full_data:
+    get:
+      tags:
+        - players
+      summary: Returns players full data given it's ID.
+      description: 'user provides player id and get its full info.'
+      parameters:
+        - name: player_id
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'successful fetched player full info.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/player_full_data'
+        '404':
+          description: 'player preview not found.'  
+          
+  /coaches/{coach_id}/preview:
+    get:
+      tags:
+        - coaches
+      summary: Returns coaches preview given it's ID.
+      description: 'user provides coach id and get its preview info.'
+      parameters:
+        - name: coach_id
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'successful fetched coach preview.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/coach_preview'
+        '404':
+          description: 'coach preview not found.'  
+  /coaches/{coach_id}/full_data:
+    get:
+      tags:
+        - coaches
+      summary: Returns coaches full data given it's ID.
+      description: 'user provides coach id and get its full info.'
+      parameters:
+        - name: coach_id
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'successful fetched coach full data.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/coach_full_data'
+        '404':
+          description: 'player preview not found.'  
+  /teams/{team_id}:
+    get:
+      tags:
+      - teams
+      summary: Return team data
+      description: 'provide team id, get all players, history, etc.'
+      parameters:
+      - name: team_id
+        required: true
+        in: path
+        schema:
+          type: integer
             
-    /players/search:
-      get:
-        tags: 
-          - players
-        summary: Search for a player
-        description: 'find a player given a string query.'
-        parameters:
-          - name: keyword
-            in: query
-            required: true
-            schema:
-              type: string
-        responses:
-          '200':
-            description: 'found matching results.'
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/players_ids'
-          '404':
-            description: 'no match found.'
-    /coach/search:
-      get:
-        tags: 
-          - coaches
-        summary: Search for a coach
-        description: 'find a coach given a string query.'
-        parameters:
-          - name: keyword
-            in: query
-            required: true
-            schema:
-              type: string
-        responses:
-          '200':
-            description: 'found matching results.'
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/coaches_ids'
-          '404':
-            description: 'no match found.'
-    /teams/search:
-      get:
-        tags: 
-          - teams
-        summary: Search for a team
-        description: 'find a team given a string query.'
-        parameters:
-          - name: keyword
-            in: query
-            required: true
-            schema:
-              type: string
-        responses:
-          '200':
-            description: 'found matching results.'
-            content:
-              application/json:
-                schema:
-                  $ref: '#/components/schemas/teams_ids'
-          '404':
-            description: 'no match found.'
-  
+      responses:
+        '200':
+          description: 'successful fetched team.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/team_data'
+        '404':
+          description: 'team not found.'  
+          
+  /players/search:
+    get:
+      tags: 
+        - players
+      summary: Search for a player
+      description: 'find a player given a string query.'
+      parameters:
+        - name: keyword
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'found matching results.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/players_ids'
+        '404':
+          description: 'no match found.'
+  /coach/search:
+    get:
+      tags: 
+        - coaches
+      summary: Search for a coach
+      description: 'find a coach given a string query.'
+      parameters:
+        - name: keyword
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'found matching results.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/coaches_ids'
+        '404':
+          description: 'no match found.'
+  /teams/search:
+    get:
+      tags: 
+        - teams
+      summary: Search for a team
+      description: 'find a team given a string query.'
+      parameters:
+        - name: keyword
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'found matching results.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/teams_ids'
+        '404':
+          description: 'no match found.'
+
+    
+
 components:
   schemas:
     user_register:
@@ -703,28 +752,79 @@ components:
     team_data:
       type: object
       properties:
-        players_id:
+        players_data:
           type: array
           items:
-            type: integer
-            description: array of player id.
-            example: 13
-        team_id:
-          type: integer
-          description: team id.
-          example: 2
-        team_name:
-          type: string
-          description: team name.
-          example: "ms.Ashdod"
-        coach_id:
-          type: integer
-          description: coach id.
-          example: 14
-        match_book:
-          type: string
-          description: 'match book: all matches of the team as XML.'
-    
+           type: object
+           properties:
+              name:
+                type: string
+                description: player name
+                example: 'Gal'
+              image:
+                type: string
+                description: path to player's image
+                example: 'http://image_123.com'
+              position:
+                type: integer
+                description: player's position on field
+                example: 7
+              team_name:
+                type: string
+                description: team's name
+                example: 'FC Barcelona'
+              
+        coach_data:
+          description: coach's data.
+          type: object
+          properties:
+            name:
+              type: string
+              example: 'Ariel Shilo'
+            photo_path:
+              type: string
+              example: 'http://photopath.com'
+            team_name:
+              type: string
+              example: 'FC Barcelona'
+          
+          
+        
+        matches:
+          type: array
+          items:
+            type: object
+            properties:
+              Match_ID:
+                type: integer
+                example: 1
+              Home_Team_ID:
+                type: integer
+                example: 2
+              Away_Team_ID:
+                type: integer
+                example: 3
+              Match_Date:
+                type: string
+                example: '03/06/2021'
+              Stadium:
+                type: string
+                example: 'Camp Nou'
+              Stage:
+                type: integer
+                example: 13
+              Score:
+                type: string
+                example: '3:1'
+              EventBook:
+                type: string
+                example: 'XML'
+              Referee_ID:
+                type: integer
+                example: '2'
+              
+          description: team's matches.
+              
     players_ids:
       type: array
       items:
