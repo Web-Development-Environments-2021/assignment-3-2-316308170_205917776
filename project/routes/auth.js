@@ -57,9 +57,14 @@ router.post("/Login", async(req, res, next) => {
     }
 });
 
-router.post("/Logout", function(req, res) {
-    req.session.reset(); // reset the session info --> send cookie when  req.session == undefined!!
-    res.status(200).send({ success: true, message: "logout succeeded" });
+router.post("/Logout", async(req, res, next) => {
+    if(req.session.user_id ){
+        req.session.reset(); // reset the session info --> send cookie when  req.session == undefined!!
+        res.status(200).send({ success: true, message: "logout succeeded" });
+    }
+    else{
+    res.status(401).send({ success: false, message: "logout failed" });
+    }
 });
 
 

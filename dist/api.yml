@@ -746,6 +746,10 @@ components:
           type: integer
           description: referee's id
           example: 1
+        stage:
+          type: integer
+          description: stage number
+          example: 1
     team_data:
       type: object
       properties:

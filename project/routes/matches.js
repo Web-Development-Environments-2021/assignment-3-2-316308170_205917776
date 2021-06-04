@@ -20,10 +20,10 @@ router.get('/:match_id', async(req, res, next) => {
 router.use(async(req, res, next) => {
     let user_name = await req.session.user_id
     if (req.session && req.session.user_id) {
-        const role = (await DButils.execQuery(
-                `SELECT User_Role FROM dbo.Users WHERE Username = '${user_name}'`)).recordset
-            .then(() => {
-                console.log(role);
+        await DButils.execQuery(
+                `SELECT User_Role FROM dbo.Users WHERE Username = '${user_name}'`)
+            .then((result) => {
+                const role = result.recordset[0].User_Role;
                 if (role != 'Representative') {
                     throw 'Invalid access!'
                 }
@@ -69,9 +69,8 @@ router.put('/', async(req, res, next) => {
 });
 
 router.post('/', async(req, res, next) => {
-    console.log(req.session);
     try {
-        DButils.execQuery(
+        await DButils.execQuery(
                 "SELECT TOP 1 Match_ID FROM dbo.Matches ORDER BY Match_ID DESC"
             )
             .then((match) => {
