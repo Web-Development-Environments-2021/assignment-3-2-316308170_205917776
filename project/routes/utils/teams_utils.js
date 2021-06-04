@@ -21,7 +21,6 @@ async function search_team_by_name(keyword) {
 async function get_team_data(team_id, include) {
     const team_details = await players_utils.getPlayersByTeam(team_id);
     if (include == "matches") {
-        console.log('hereeeeee');
         const matches = (await DButils.execQuery(
             `SELECT * FROM dbo.Matches
              WHERE Home_Team_ID = '${team_id}'

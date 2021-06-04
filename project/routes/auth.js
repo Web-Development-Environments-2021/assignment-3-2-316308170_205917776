@@ -19,7 +19,7 @@ router.post("/Register", async(req, res, next) => {
             req.body.password,
             parseInt(process.env.bcrypt_saltRounds)
         );
-        req.body.password = hash_password;  
+        req.body.password = hash_password;
         // add the new user to the DB.
         await DButils.execQuery(
             `INSERT INTO dbo.Users (Username, First_name, Last_name, User_Password, Country,Email, User_Role) VALUES
@@ -40,19 +40,18 @@ router.post("/Register", async(req, res, next) => {
 router.post("/Login", async(req, res, next) => {
     try {
         const user = (
-            await DButils.execQuery(
+            (await DButils.execQuery(
                 `SELECT * FROM dbo.Users WHERE username = '${req.body.username}'`
-            ).recordset
+            )).recordset
         )[0]; // user = user[0];
         // check that username exists & the password is correct
         if (!user || !bcrypt.compareSync(req.body.password, user.User_Password)) {
             throw { status: 401, message: "Username or Password incorrect" };
         }
         // Set cookie
-        req.session.user_id = user.user_id;
-
+        req.session.user_id = user.Username;
         // return cookie
-        res.status(200).send("login succeeded");
+        res.status(200).send(req.session.user_id);
     } catch (error) {
         next(error);
     }
