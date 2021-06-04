@@ -17,7 +17,6 @@ async function getPlayerIdsByTeam(team_id) {
     team.data.data.squad.data.map((player) =>
         player_ids_list.push(player.player_id)
     );
-    console.log(team.data.data.coach.data.coach_id);
     return [player_ids_list, team.data.data.coach.data.coach_id];
 }
 
@@ -62,7 +61,6 @@ async function getPlayersByTeam(team_id) {
 
 async function search_players_by_name(keyword) {
     const all_teams_in_league = await league_utils.get_all_teams_in_league();
-    console.log(all_teams_in_league)
     const all_players = (await axios.get(
         `${api_domain}/players/search/${keyword}`, {
             params: {
@@ -71,7 +69,6 @@ async function search_players_by_name(keyword) {
             },
         }
     )).data.data;
-    console.log(all_players)
     const filtered = all_players.filter(player => all_teams_in_league.includes(player.team_id))
     return filtered;
 }
@@ -106,7 +103,6 @@ async function get_player_full_data(player_id) {
 }
 
 async function get_player_preview(player_id) {
-    console.log('in func')
     let full_data = await get_player_full_data(player_id);
     return {
         name: full_data.name,

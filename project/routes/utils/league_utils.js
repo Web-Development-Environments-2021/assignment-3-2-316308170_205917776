@@ -52,7 +52,6 @@ async function getUpcomingGame(stage_id) {
 }
 
 async function getLeagueDetails() {
-    console.log('here');
     const league = (await axios.get(
         `${api_domain}/leagues/${LEAGUE_ID}`, {
             params: {

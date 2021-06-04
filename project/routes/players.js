@@ -12,7 +12,7 @@ router.get("/search", async(req, res, next) => {
             player_id: player.player_id,
             player_name: player.fullname
         }));
-        res.send(data);
+        res.status(200).send(data);
     } catch (error) {
         next(error);
     }
@@ -21,7 +21,7 @@ router.get("/search", async(req, res, next) => {
 router.get('/:player_id/preview', async(req, res, next) => {
     try {
         const player_info = await players_utils.get_player_preview(req.params.player_id);
-        res.send(player_info);
+        res.status(200).send(player_info);
     } catch (error) {
         next(error);
     }
@@ -30,7 +30,7 @@ router.get('/:player_id/preview', async(req, res, next) => {
 router.get('/:player_id/full_data', async(req, res, next) => {
     try {
         const player_info = await players_utils.get_player_full_data(req.params.player_id);
-        res.send(player_info);
+        res.status(200).send(player_info);
     } catch (error) {
         next(error);
     }
