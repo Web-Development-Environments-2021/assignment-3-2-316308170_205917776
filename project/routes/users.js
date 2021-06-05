@@ -49,6 +49,8 @@ router.post("/favoriteMatches", async(req, res, next) => {
         const status = await users_utils.markAsFavorite(user_id, match_id, table_name,attribute_ID)
         if (status == 0)
             res.status(404).send('no favorite matches')
+        else if (status == -1)
+            res.status(400).send('already in favorites!')
         else
             res.status(201).send('successfully added match to favorites!')
     } catch (error) {
@@ -98,6 +100,8 @@ router.post("/favoritePlayers", async(req, res, next) => {
         const status = await users_utils.markAsFavorite(user_id, player_id, table_name,attribute_ID)
         if (status == 0)
             res.status(404).send('no favorite players')
+        else if (status == -1)
+            res.status(400).send('already in favorites!')
         else
             res.status(201).send('successfully added player to favorites!')
     } catch (error) {
@@ -146,6 +150,8 @@ router.post("/favoriteTeams", async(req, res, next) => {
         const status = await users_utils.markAsFavorite(user_id, team_id, table_name,attribute_ID)
         if (status == 0)
             res.status(404).send('no favorite teams')
+        else if (status == -1)
+            res.status(400).send('already in favorites!')
         else
             res.status(201).send('successfully added team to favorites!')
     } catch (error) {

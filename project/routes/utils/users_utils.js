@@ -1,11 +1,28 @@
 const DButils = require("./DButils");
+const teams_utils = require("./teams_utils");
+const player_utils = require("./players_utils");
+const e = require("express");
 
 async function markAsFavorite(user_id, favorite_id, table_name,attribute_ID) {
-    const result = (await DButils.execQuery(
-        `INSERT INTO Favorite_${table_name} VALUES ('${user_id}','${favorite_id}')
-        WHERE NOT EXISTS ( SELECT ${attribute_ID} FROM Favorite_${table_name} 
-            WHERE ${attribute_ID} = '${favorite_id}'`
-    )).rowsAffected[0];
+    let exist;
+    let result = 0;
+    if(table_name === "Teams")
+        exist = await player_utils.get_player_preview(favorite_id);
+    else if (table_name === "Players")
+        exist = await teams_utils.get_team_data(favorite_id,null);
+    else 
+        exist = (await DButils.execQuery(`SELECT ${attribute_ID} FROM dbo.${table_name} WHERE ${attribute_ID} = '${favorite_id}'`)).recordset[0].Match_ID;
+    if(exist){
+        result = -1;
+        const check = (await DButils.execQuery(`SELECT ${attribute_ID} FROM Favorite_${table_name} 
+        WHERE ${attribute_ID} = '${favorite_id}'`)).recordset[0];
+        if(!check){
+            await DButils.execQuery(
+                `INSERT INTO Favorite_${table_name} VALUES ('${user_id}','${favorite_id}')`
+            )
+            result = 1;
+    }}
+    return result;
 }
 
 
