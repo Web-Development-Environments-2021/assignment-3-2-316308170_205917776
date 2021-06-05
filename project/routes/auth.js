@@ -1,6 +1,8 @@
 var express = require("express");
 var router = express.Router();
+var display_details = null;
 const DButils = require("../routes/utils/DButils");
+const league_utils = require("../routes/utils/league_utils");
 const bcrypt = require("bcryptjs");
 const axios = require("axios");
 
@@ -29,7 +31,7 @@ router.post("/Register", async(req, res, next) => {
              '${hash_password}', 
              '${req.body.country}',
              '${req.body.email}', 
-             'User')`
+             'Representative')`
         );
         res.status(201).send("user created");
     } catch (error) {
@@ -58,17 +60,26 @@ router.post("/Login", async(req, res, next) => {
 });
 
 router.post("/Logout", async(req, res, next) => {
-    if(req.session.user_id ){
+    if (req.session.user_id) {
         req.session.reset(); // reset the session info --> send cookie when  req.session == undefined!!
         res.status(200).send({ success: true, message: "logout succeeded" });
-    }
-    else{
-    res.status(401).send({ success: false, message: "logout failed" });
+    } else {
+        res.status(401).send({ success: false, message: "logout failed" });
     }
 });
 
 
-router.get("/", function(req, res) {
+
+router.get("/", async function(req, res) {
+    let league_details = await league_utils.getLeagueDetails();
+    let upcoming_game_details = await league_utils.getUpcomingGame(league_details.current_stage_id);
+    display_details = {
+        league_name: league_details.league_name,
+        season_name: league_details.current_season_name,
+        stage_name: league_details.current_stage_name,
+        upcoming_game: upcoming_game_details[0]
+    }
+    console.log(display_details);
     res.sendFile(`/index.html`, { root: './project' })
 });
 module.exports = router;

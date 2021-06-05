@@ -2,18 +2,18 @@ const axios = require("axios");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 const league_utils = require("./league_utils")
 const coach_utils = require("./coaches_utils")
-    // const TEAM_ID = "85";
+const SEASON_ID = 18334
 
-async function getPlayerIdsByTeam(team_id) {
+
+
+async function getSquadIdsByTeam(team_id) {
     let player_ids_list = [];
     const team = await axios.get(`${api_domain}/teams/${team_id}`, {
         params: {
             include: "squad,coach",
-            // include: "coach",
             api_token: process.env.api_token
         }
     });
-    // console.log(team.data.data.squad)
     team.data.data.squad.data.map((player) =>
         player_ids_list.push(player.player_id)
     );
@@ -32,14 +32,11 @@ async function getPlayersInfo(players_ids_list) {
             })
         )
     );
-    // console.log(players_ids_list);
     const players_info = await Promise.all(promises);
-    // console.log(players_info);
     return extractRelevantPlayerData(players_info);
 }
 
 function extractRelevantPlayerData(players_info) {
-    // console.log(players_info);
     return players_info.map((player_info) => {
         const { fullname, image_path, position_id } = player_info.data.data;
         const { name } = player_info.data.data.team.data;
@@ -52,24 +49,21 @@ function extractRelevantPlayerData(players_info) {
     });
 }
 
-async function getPlayersByTeam(team_id) {
-    let team_ids_list = await getPlayerIdsByTeam(team_id);
+async function getSquadByTeam(team_id) {
+    let team_ids_list = await getSquadIdsByTeam(team_id);
     let team_info = await getPlayersInfo(team_ids_list[0]);
     let coach_info = await coach_utils.get_coach_preview(team_ids_list[1]);
     return [team_info, coach_info];
 }
 
-async function search_players_by_name(keyword) {
-    const all_teams_in_league = await league_utils.get_all_teams_in_league();
-    const all_players = (await axios.get(
-        `${api_domain}/players/search/${encodeURI(keyword)}`, {
-            params: {
-                include: "PLAYER_NAME",
-                api_token: process.env.api_token,
-            },
+async function search_players_by_name(keyword, all_players) {
+    let filtered = []
+    all_players.map(
+        (player) => {
+            if (player.name != null && player.name.includes(keyword))
+                filtered.push(player)
         }
-    )).data.data;
-    const filtered = all_players.filter(player => all_teams_in_league.includes(player.team_id))
+    )
     return filtered;
 }
 
@@ -112,8 +106,33 @@ async function get_player_preview(player_id) {
     }
 }
 
-exports.getPlayersByTeam = getPlayersByTeam;
+async function get_all_players_in_season() {
+    const all_teams = (await axios.get(`${api_domain}/teams/season/${SEASON_ID}`, {
+        params: {
+            include: "squad.player.team",
+            api_token: process.env.api_token,
+        },
+    })).data.data
+    const all_players = []
+    all_teams.map(
+        (team) => {
+            team_squad = team.squad.data;
+            team_squad.map(
+                (player) => {
+                    all_players.push({
+                        id: player.player.data.player_id,
+                        name: player.player.data.fullname
+                    })
+                }
+            )
+        }
+    )
+    return all_players;
+}
+
+exports.getSquadByTeam = getSquadByTeam;
 exports.getPlayersInfo = getPlayersInfo;
 exports.search_players_by_name = search_players_by_name;
 exports.get_player_full_data = get_player_full_data;
 exports.get_player_preview = get_player_preview;
+exports.get_all_players_in_season = get_all_players_in_season;

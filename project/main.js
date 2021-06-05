@@ -1,5 +1,6 @@
 //#region global imports
 const DButils = require("./routes/utils/DButils");
+const players_utils = require("./routes/utils/players_utils")
 const axios = require("axios");
 const bcrypt = require("bcryptjs");
 require("dotenv").config();
@@ -56,8 +57,6 @@ const players = require("./routes/players")
 const coaches = require("./routes/coaches")
 const matches = require("./routes/matches")
 const referees = require("./routes/referees")
-    //#endregion
-
 
 //#region cookie middleware
 app.use(function(req, res, next) {
@@ -67,10 +66,12 @@ app.use(function(req, res, next) {
                 const users = result.recordset
                 if (users.find((x) => x.Username === req.session.user_id)) {
                     req.user_id = req.session.user_id;
+                    console.log(req.user_id);
                 }
                 next();
             })
             .catch((error) => next());
+
     } else {
         next();
     }

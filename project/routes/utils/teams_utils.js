@@ -5,6 +5,7 @@ const players_utils = require("./players_utils")
 const DButils = require("./DButils")
 
 async function get_stadium_by_team_id(team_id) {
+    console.log(team_id);
     const stadium = (await axios.get(
         `${api_domain}/teams/${team_id}`, {
             params: {
@@ -32,14 +33,15 @@ async function search_team_by_name(keyword) {
 }
 
 async function get_team_data(team_id, include) {
-    const team_details = await players_utils.getPlayersByTeam(team_id);
+    const team_details = await players_utils.getSquadByTeam(team_id);
     if (include == "matches") {
         const matches = (await DButils.execQuery(
             `SELECT * FROM dbo.Matches
              WHERE Home_Team_ID = '${team_id}'
              OR Away_Team_ID = '${team_id}'`
         )).recordsets[0]
-        team_details.push(matches);
+        const filtered = matches.filter(match => match.Score != null)
+        team_details.push(filtered);
     }
     return team_details
 }

@@ -9,13 +9,12 @@ const players_utils = require("./utils/players_utils");
  */
 router.use(async function(req, res, next) {
     if (req.user_id) {
-       next();
-    } 
-    else{
-        res.status(401).send("meeeeeee");
+        next();
+    } else {
+        res.status(401).send("user is not logged in");
     }
-    });
-    
+});
+
 
 
 router.get("/favoriteMatches", async(req, res, next) => {
@@ -46,7 +45,7 @@ router.post("/favoriteMatches", async(req, res, next) => {
         const match_id = req.body.match_id;
         const table_name = "Matches"
         const attribute_ID = "Match_ID"
-        const status = await users_utils.markAsFavorite(user_id, match_id, table_name,attribute_ID)
+        const status = await users_utils.markAsFavorite(user_id, match_id, table_name, attribute_ID)
         if (status == 0)
             res.status(404).send('no favorite matches')
         else if (status == -1)
@@ -97,7 +96,7 @@ router.post("/favoritePlayers", async(req, res, next) => {
         const player_id = req.body.player_id;
         const table_name = "Players"
         const attribute_ID = "Player_ID"
-        const status = await users_utils.markAsFavorite(user_id, player_id, table_name,attribute_ID)
+        const status = await users_utils.markAsFavorite(user_id, player_id, table_name, attribute_ID)
         if (status == 0)
             res.status(404).send('no favorite players')
         else if (status == -1)
@@ -147,7 +146,7 @@ router.post("/favoriteTeams", async(req, res, next) => {
         const team_id = req.body.team_id;
         const table_name = "Teams"
         const attribute_ID = "Team_ID"
-        const status = await users_utils.markAsFavorite(user_id, team_id, table_name,attribute_ID)
+        const status = await users_utils.markAsFavorite(user_id, team_id, table_name, attribute_ID)
         if (status == 0)
             res.status(404).send('no favorite teams')
         else if (status == -1)

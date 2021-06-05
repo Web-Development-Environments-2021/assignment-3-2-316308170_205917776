@@ -7,7 +7,6 @@ const league_utils = require("./utils/league_utils");
 router.get('/get_upcoming_game', async(req, res, next) => {
     try {
         const current_stage_id = (await league_utils.getLeagueDetails()).current_stage_id;
-        console.log(current_stage_id);
         const upcoming_game = await league_utils.getUpcomingGame(current_stage_id);
         res.status(200).send(upcoming_game);
     } catch (error) {

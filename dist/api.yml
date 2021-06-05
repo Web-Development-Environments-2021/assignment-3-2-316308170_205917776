@@ -5,7 +5,6 @@ info:
   description: 'API for assignment 3.1'
   
 tags: 
-  - name: league
   - name: matches
   - name: users
   - name: players
@@ -51,22 +50,6 @@ paths:
         '400':
           description:  Wrong input.
           
-  /league/get_upcoming_game:
-    get:
-      tags: 
-        - league
-      summary: Returns all relevant data for upcoming game preview.
-      description: 'returns league name, season, stage and upcoming game data'
-      responses:
-        '200':
-          description: 'successful fetched upcoming game details.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/upcoming_game'
-        '404':
-          description: 'upcoming game data not found.'
-  
   /users/favoriteMatches:
     get:
       tags: 
@@ -162,7 +145,7 @@ paths:
           description: 'player id'
           schema:
             type: integer
-            example: 8
+            example: 26722
       responses:
         '200':
           description: 'successful deleted player id from favorites.'
@@ -213,7 +196,7 @@ paths:
             description: 'team id'
             schema:
               type: integer
-              example: 8
+              example: 85
         responses:
           '200':
             description: 'successful deleted team id from favorites.'
@@ -291,6 +274,17 @@ paths:
         '404':
           description: 'match doesnt found.'      
 
+  /matches/set_all_matches:
+    post:
+      tags: 
+        - matches
+    summary: Create all matches.
+    description: Set all new match.  
+    responses:
+      '200':
+        description: 'all good'
+      '500':
+        description: 'something is wrong'
   /players/{player_id}/preview:
     get:
       tags:
@@ -393,6 +387,11 @@ paths:
         schema:
           type: integer
           example: 85
+      - name: include
+        in: query
+        schema:
+          type: string
+          example: matches
       responses:
         '200':
           description: 'successful fetched team.'
@@ -525,13 +524,13 @@ components:
           example: 'SuperLiga'
         season:
           type: string
-          example: '2011/12'
+          example: '2021/22'
         stage:
           type: integer
-          example: 36
+          example: 77453568
         match_id:
           type: integer
-          example: 123
+          example: 8
     
     favourite_matches:
       type: array
@@ -540,44 +539,46 @@ components:
           match_id:
                 type: integer
                 description: match id
-                example: 25
+                example: 8
+    
     favourite_add_match:
       type: object
       properties:
           match_id:
                 type: integer
                 description: match id
-                example: 25
+                example: 8
+    
     favourite_players:
       type: array
       items:
         properties:
-          match_id:
+          player_id:
                 type: integer
                 description: player id
-                example: 25
+                example: 26722
     favourite_add_player:
       type: object
       properties:
-          match_id:
+          player_id:
                 type: integer
                 description: player id
-                example: 25
+                example: 26722
     favourite_teams:
       type: array
       items:
         properties:
-          match_id:
+          team_id:
                 type: integer
                 description: team id
-                example: 25
+                example: 85
     favourite_add_team:
       type: object
       properties:
-          match_id:
+          team_id:
                 type: integer
                 description: team id
-                example: 25
+                example: 85
                 
     game_details:
       type: object

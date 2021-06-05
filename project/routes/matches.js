@@ -77,8 +77,8 @@ router.post('/', async(req, res, next) => {
                 "SELECT TOP 1 Match_ID FROM dbo.Matches ORDER BY Match_ID DESC"
             )
             .then((match) => {
-                match = match.recordset[0] || 1
-                const match_id = (match) ? match.Match_ID + 1 : match;
+                match = match.recordset[0] || 0
+                const match_id = (match) ? match.Match_ID + 1 : match + 1;
                 DButils.execQuery(
                         `INSERT INTO dbo.Matches (Match_ID, Home_Team_ID, Away_Team_ID, Referee_ID, Match_Date, Stadium, Stage)
                 VALUES ('${match_id}',
@@ -95,6 +95,48 @@ router.post('/', async(req, res, next) => {
         next(error);
     }
 });
+
+// router.post('/set_all_matches', async(req, res, next) => {
+//     let all_teams = await league_utils.get_all_teams_in_league();
+//     // console.log(all_teams);
+//     const all_pairs = []
+//     for (let i = 0; i < all_teams.length - 1; i++) {
+//         for (let j = i + 1; j < all_teams.length; j++) {
+//             all_pairs.push([all_teams[i], all_teams[j]])
+//             all_pairs.push([all_teams[j], all_teams[i]])
+//         }
+//     }
+//     for (let i = 0; i < all_pairs.length; i++) {
+//         // console.log(all_pairs[i]);
+//         const stadium = await teams_utils.get_stadium_by_team_id(all_pairs[i][0]);
+//         const stage = parseInt((await league_utils.getLeagueDetails()).current_stage_id)
+//         let referee_id = 1 + Math.round(Math.random() * 4)
+//         let today = new Date().toISOString().slice(0, 10)
+//             // console.log(stadium, stage, referee_id, today);
+//         try {
+//             await DButils.execQuery(
+//                     "SELECT TOP 1 Match_ID FROM dbo.Matches ORDER BY Match_ID DESC"
+//                 )
+//                 .then((match) => {
+//                     match = match.recordset[0] || 0
+//                     const match_id = (match) ? match.Match_ID + 1 : match + 1;
+//                     console.log(match);
+//                     DButils.execQuery(
+//                         `INSERT INTO dbo.Matches (Match_ID, Home_Team_ID, Away_Team_ID, Referee_ID, Match_Date, Stadium, Stage)
+//                             VALUES ('${match_id}',
+//                             '${all_pairs[i][0]}',
+//                             '${all_pairs[i][1]}',
+//                             '${referee_id}',
+//                             '${today}',
+//                             '${stadium}',
+//                             '${stage}')`)
+//                 })
+//         } catch (error) {
+//             next(error);
+//         }
+//     }
+// });
+
 
 router.delete('/:match_id', async(req, res, next) => {
     DButils.execQuery(
