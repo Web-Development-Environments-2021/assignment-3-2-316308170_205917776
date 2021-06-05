@@ -16,7 +16,8 @@ async function search_coaches_by_name(keyword) {
         coach_id: team.coach.data.coach_id,
         coach_name: team.coach.data.fullname
     }))
-    const filtered = coaches.filter(coach => coach.coach_name.includes(keyword))
+    console.log(coaches);
+    const filtered = coaches.filter(coach => coach.coach_name != null && coach.coach_name.includes(keyword))
     return filtered;
     // next game details should come from DB
 }
@@ -42,7 +43,7 @@ async function get_coach_full_data(coach_id) {
         team_name: team_name,
         common_name: coach_info.common_name,
         birthdate: coach_info.birthdate,
-        birth_country: coach_info.birth_country,
+        birth_country: coach_info.birthcountry,
         nationality: coach_info.nationality
     };
 }

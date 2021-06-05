@@ -56,13 +56,13 @@ async function getPlayersByTeam(team_id) {
     let team_ids_list = await getPlayerIdsByTeam(team_id);
     let team_info = await getPlayersInfo(team_ids_list[0]);
     let coach_info = await coach_utils.get_coach_preview(team_ids_list[1]);
-    return [team_info,coach_info];
+    return [team_info, coach_info];
 }
 
 async function search_players_by_name(keyword) {
     const all_teams_in_league = await league_utils.get_all_teams_in_league();
     const all_players = (await axios.get(
-        `${api_domain}/players/search/${keyword}`, {
+        `${api_domain}/players/search/${encodeURI(keyword)}`, {
             params: {
                 include: "PLAYER_NAME",
                 api_token: process.env.api_token,

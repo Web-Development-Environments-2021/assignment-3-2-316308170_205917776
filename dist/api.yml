@@ -345,6 +345,7 @@ paths:
           in: path
           schema:
             type: integer
+            example: 459045
       responses:
         '200':
           description: 'successful fetched coach preview.'
@@ -366,6 +367,7 @@ paths:
           in: path
           schema:
             type: integer
+            example: 459045
       responses:
         '200':
           description: 'successful fetched coach full data.'
@@ -419,7 +421,7 @@ paths:
                 $ref: '#/components/schemas/players_ids'
         '404':
           description: 'no match found.'
-  /coach/search:
+  /coaches/search:
     get:
       tags: 
         - coaches
@@ -431,6 +433,7 @@ paths:
           required: true
           schema:
             type: string
+            example: Niels
       responses:
         '200':
           description: 'found matching results.'
@@ -452,6 +455,7 @@ paths:
           required: true
           schema:
             type: string
+            example: København
       responses:
         '200':
           description: 'found matching results.'
@@ -620,18 +624,18 @@ components:
     coach_preview:
       type: object
       properties:
-        full_name:
+        name:
           type: string
           description: 'coaches full name'
-          example: 'Ariel Shilo'
-        team_name:
-            type: integer
-            description: 'team name'
-            example: 'ms.Ashdod'
+          example: Glen Riddersholm
         photo_path:
             type: integer
             description: 'photo path'
-            example: 'C:/photos/gal.mp3'
+            example: 'https://cdn.sportmonks.com/images/soccer/players/5/459045.png'
+        team_name:
+            type: string
+            description: 'team name'
+            example: SønderjyskE
     player_full_data:
         type: object
         properties:
@@ -678,34 +682,34 @@ components:
     coach_full_data:
         type: object
         properties:
-          full_name:
+          name:
             type: string
             description: 'coaches full name'
-            example: 'Gal Alkalay'
-          team_name:
-            type: integer
-            description: 'team name'
-            example: 'ms.Ashdod'
+            example: Glen Riddersholm
           photo_path:
-            type: integer
+            type: string
             description: 'photo path'
-            example: 'C:/photos/gal.mp3'
+            example: https://cdn.sportmonks.com/images/soccer/players/5/459045.png
+          team_name:
+            type: string
+            description: 'team name'
+            example: SønderjyskE
           common_name:
             type: string
             description: 'coach nickname'
-            example: 'La Pulga'
-          nationality:
-            type: string
-            description: 'coaches nationality'
-            example: 'Israeli'
-          birth_country:
-            type: string
-            description: 'coaches origin country'
-            example: 'Israel'
+            example: G. Riddersholm
           birthdate:
             type: string
             description: 'coaches birth date'
-            example: '15/04/1995'
+            example: 26/04/1972
+          birth_country:
+            type: string
+            description: 'coaches origin country'
+            example: Denmark
+          nationality:
+            type: string
+            description: 'coaches nationality'
+            example: Denmark
             
     update_match:
       type: object
@@ -843,11 +847,11 @@ components:
           coach_id:
                 type: integer
                 description: coach id
-                example: 123
+                example: 457779
           coach_name:
                 type: string
                 description: Coach name
-                example: 'Ariel Shilo'            
+                example: Kent Nielsen           
     teams_ids:
       type: array
       items:

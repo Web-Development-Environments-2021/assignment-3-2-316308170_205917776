@@ -7,7 +7,7 @@ const DButils = require("./DButils")
 async function search_team_by_name(keyword) {
     const all_teams_in_league = await league_utils.get_all_teams_in_league();
     const all_teams_by_name = (await axios.get(
-        `${api_domain}/teams/search/${keyword}`, {
+        `${api_domain}/teams/search/${encodeURI(keyword)}`, {
             params: {
                 include: "TEAM_NAME",
                 api_token: process.env.api_token,
