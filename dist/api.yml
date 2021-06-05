@@ -264,6 +264,7 @@ paths:
           in: path
           schema:
             type: integer
+            example: 9
       responses:
         '200':
           description: 'successful fetched match info.'
@@ -302,6 +303,7 @@ paths:
           in: path
           schema:
             type: integer
+            example: 26722
       responses:
         '200':
           description: 'successful fetched player preview.'
@@ -323,6 +325,7 @@ paths:
           in: path
           schema:
             type: integer
+            example: 26722
       responses:
         '200':
           description: 'successful fetched player full info.'
@@ -389,7 +392,7 @@ paths:
         in: path
         schema:
           type: integer
-            
+          example: 85
       responses:
         '200':
           description: 'successful fetched team.'
@@ -412,6 +415,7 @@ paths:
           required: true
           schema:
             type: string
+            example: Andersen
       responses:
         '200':
           description: 'found matching results.'
@@ -578,49 +582,55 @@ components:
     game_details:
       type: object
       properties:
-        home_team_id:
+        Home_Team_ID:
           type: integer
           description: 'home team id'
-          example: 1
-        away_team_id:
+          example: 85
+        Away_Team_ID:
           type: integer
           description: 'away team id'
-          example: 2
-        date:
+          example: 939
+        Match_Date:
           type: string
           description: 'match date'
           example: '14/05/2021'
-        score:
+        Score:
           type: string
           description: 'match result (optional).'
-          example: '3:1'
-        stadium:
+          example: 1:2
+        Stadium:
           type: string
           description: 'the stadium the match is played in.'
-          example: 'Sami Ofer'
-        event_book:
-          type: string
-          description: 'event book: all events that happend in the game as XML.'
-          
+          example: Parken
+        EventBook:
+          description: 'event book: all events that happend in the game.'
+          type: array
+          items:
+            type: string
+            example: 04/06/20212 19:45 78, Goal - Stephan Maigaard Andersen
+        Referee_ID:
+          type: integer
+          example: 1
+
     player_preview:
       type: object
       properties:
-        full_name:
+        name:
           type: string
           description: 'players full name'
-          example: 'Gal Alkalay'
+          example: Stephan Maigaard Andersen
         team_name:
-          type: integer
+          type: string
           description: 'team name'
-          example: 'ms.Ashdod'
+          example: København
         photo_path:
-          type: integer
+          type: string
           description: 'photo path'
-          example: 'C:/photos/gal.mp3'
+          example:  https://cdn.sportmonks.com/images/soccer/players/2/26722.png
         position_number:
           type: integer
           description: 'position on field number'
-          example: 7
+          example: 1
     coach_preview:
       type: object
       properties:
@@ -642,43 +652,44 @@ components:
           full_name:
             type: string
             description: 'players full name'
-            example: 'Gal Alkalay'
+            example: Stephan Maigaard Andersen
           team_name:
             type: integer
             description: 'team name'
-            example: 'ms.Ashdod'
+            example: København
           photo_path:
-            type: integer
+            type: string
             description: 'photo path'
-            example: 'C:/photos/gal.mp3'
+            example: https://cdn.sportmonks.com/images/soccer/players/2/26722.png
           position_number:
             type: integer
             description: 'position on field number'
-            example: 7
+            example: 1
           common_name:
             type: string
             description: 'player nickname'
-            example: 'La Pulga'
-          nationality:
-            type: string
-            description: 'players nationality'
-            example: 'Israeli'
-          birth_country:
-            type: string
-            description: 'players origin country'
-            example: 'Israel'
+            example: S. Andersen
           birthdate:
             type: string
             description: 'players birth date'
-            example: '15/04/1995'
+            example: 26/11/1981
+          birth_country:
+            type: string
+            description: 'players origin country'
+            example: Denmark
+          nationality:
+            type: string
+            description: 'players nationality'
+            example: Denmark
           height:
-            type: integer
+            type: string
             description: 'players height in cm'
-            example: 190
+            example: '190 cm'
           weight:
-            type: integer
+            type: string
             description: 'players weight in kg'
-            example: 80
+            example: '80 kg'
+    
     coach_full_data:
         type: object
         properties:
@@ -717,15 +728,18 @@ components:
         match_id:
           type: integer
           description: "Match id to update."
-          example: 3
+          example: 9
         score:
           type: string
           description: match result (optional).
           example: '1:2'
         event_book:
-          type: string
-          description: 'event book: all events that happend in the game as XML.'
-          example: 04/06/20212 19:45 78, Goal - Lionel Messi
+          description: 'event book: all events that happend in the game.'
+          type: array
+          items:
+            type: string
+            example: 04/06/20212 19:45 78, Goal - Stephan Maigaard Andersen 
+          
           
     new_match:
       type: object
@@ -733,26 +747,18 @@ components:
         home_team_id:
           type: integer
           description: home team id
-          example: 1
+          example: 85
         away_team_id:
           type: integer
           description: away team id
-          example: 2
+          example: 939
         date:
           type: string
           description: match date
           example: 14/05/2021
-        stadium:
-          type: string
-          description: the stadium the match is played in.
-          example: Sami Ofer
         referee_id:
           type: integer
           description: referee's id
-          example: 1
-        stage:
-          type: integer
-          description: stage number
           example: 1
     team_data:
       type: object
@@ -765,67 +771,67 @@ components:
               name:
                 type: string
                 description: player name
-                example: 'Gal'
+                example: Stephan Maigaard Andersen
               image:
                 type: string
                 description: path to player's image
-                example: 'http://image_123.com'
+                example: https://cdn.sportmonks.com/images/soccer/players/2/26722.png
               position:
                 type: integer
                 description: player's position on field
-                example: 7
+                example: 1
               team_name:
                 type: string
                 description: team's name
-                example: 'FC Barcelona'
-              
-    coach_data:
-      description: coach's data.
-      type: object
-      properties:
-        name:
-          type: string
-          example: 'Ariel Shilo'
-        photo_path:
-          type: string
-          example: 'http://photopath.com'
-        team_name:
-          type: string
-          example: 'FC Barcelona'
-          
-    matches:
-      type: array
-      items:
-        type: object
-        properties:
-          Match_ID:
-            type: integer
-            example: 1
-          Home_Team_ID:
-            type: integer
-            example: 2
-          Away_Team_ID:
-            type: integer
-            example: 3
-          Match_Date:
-            type: string
-            example: '03/06/2021'
-          Stadium:
-            type: string
-            example: 'Camp Nou'
-          Stage:
-            type: integer
-            example: 13
-          Score:
-            type: string
-            example: '3:1'
-          EventBook:
-            type: string
-            example: 'XML'
-          Referee_ID:
-            type: integer
-            example: '2'
-          
+                example: København      
+        coach_data:
+          description: coach's data.
+          type: object
+          properties:
+            name:
+              type: string
+              example: Jess Thorup
+            photo_path:
+              type: string
+              example: null
+            team_name:
+              type: string
+              example: København           
+        matches:
+          type: array
+          items:
+            type: object
+            properties:
+              Match_ID:
+                type: integer
+                example: 2
+              Home_Team_ID:
+                type: integer
+                example: 85
+              Away_Team_ID:
+                type: integer
+                example: 939
+              Match_Date:
+                type: string
+                example: 03/06/2021
+              Stadium:
+                type: string
+                example: Parken
+              Stage:
+                type: integer
+                example: Group Stage
+              Score:
+                type: string
+                example: 3:1
+              EventBook:
+                type: array
+                items:
+                  type: string
+                  example: 04/06/20212 19:45 78, Goal - Stephan Maigaard Andersen 
+              Referee_ID:
+                type: integer
+                example: 2
+
       description: team's matches.
               
     players_ids:
@@ -835,11 +841,11 @@ components:
           player_id:
                 type: integer
                 description: player id
-                example: 25
+                example: 26722
           player_name:
                 type: string
                 description: player name
-                example: 'Gal Alkalay'
+                example: Stephan Maigaard Andersen
     coaches_ids:
       type: array
       items:

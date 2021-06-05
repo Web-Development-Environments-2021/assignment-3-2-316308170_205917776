@@ -1,16 +1,17 @@
 var express = require("express");
 var router = express.Router();
 const DButils = require("./utils/DButils");
-// const matches_utils = require("./utils/matches_utils");
+const teams_utils = require("./utils/teams_utils")
+const league_utils = require("./utils/league_utils")
 
 router.get('/:match_id', async(req, res, next) => {
 
     try {
         const data = (await DButils.execQuery(
             `SELECT * FROM dbo.Matches WHERE Match_ID = '${req.params.match_id}'`
-        )).recordset;
+        )).recordset
+        delete data[0].Match_ID;
         res.send(data);
-
     } catch (error) {
         next(error);
     }
@@ -69,12 +70,14 @@ router.put('/', async(req, res, next) => {
 });
 
 router.post('/', async(req, res, next) => {
+    const stadium = req.body.stadium || await (teams_utils.get_stadium_by_team_id(req.body.home_team_id));
+    const stage = req.body.stage || (await league_utils.getLeagueDetails()).current_stage_id
     try {
         await DButils.execQuery(
                 "SELECT TOP 1 Match_ID FROM dbo.Matches ORDER BY Match_ID DESC"
             )
             .then((match) => {
-                match = match.recordset[0] || 0
+                match = match.recordset[0] || 1
                 const match_id = (match) ? match.Match_ID + 1 : match;
                 DButils.execQuery(
                         `INSERT INTO dbo.Matches (Match_ID, Home_Team_ID, Away_Team_ID, Referee_ID, Match_Date, Stadium, Stage)
@@ -83,8 +86,8 @@ router.post('/', async(req, res, next) => {
                 '${req.body.away_team_id}',
                 '${req.body.referee_id}',
                 '${req.body.date}',
-                '${req.body.stadium}',
-                '${req.body.stage}')`)
+                '${stadium}',
+                '${stage}')`)
                     .then(() => { res.status(201).send("match created") })
                     .catch((error) => { next(error) })
             })

@@ -95,7 +95,7 @@ async function get_player_full_data(player_id) {
         team_name: team_name,
         common_name: player_info.common_name,
         birthdate: player_info.birthdate,
-        birth_country: player_info.birth_country,
+        birth_country: player_info.birthcountry,
         nationality: player_info.nationality,
         height: player_info.height,
         weight: player_info.weight
@@ -106,9 +106,9 @@ async function get_player_preview(player_id) {
     let full_data = await get_player_full_data(player_id);
     return {
         name: full_data.name,
+        team_name: full_data.team_name,
         photo_path: full_data.photo_path,
-        position: full_data.position,
-        team_name: full_data.team_name
+        position: full_data.position
     }
 }
 

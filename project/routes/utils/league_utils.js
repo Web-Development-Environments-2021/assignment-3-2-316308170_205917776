@@ -37,15 +37,15 @@ async function get_all_teams_in_league() {
 
 
 async function getUpcomingGame(stage_id) {
-    const stage_order = (await axios.get(
-        `${api_domain}/stages/${stage_id}`, {
-            params: {
-                api_token: process.env.api_token,
-            },
-        }
-    )).data.data.sort_order;
+    // const stage_order = (await axios.get(
+    //     `${api_domain}/stages/${stage_id}`, {
+    //         params: {
+    //             api_token: process.env.api_token,
+    //         },
+    //     }
+    // )).data.data.sort_order;
     upcoming_game = (await DButils.execQuery(
-        `SELECT TOP 1 * FROM dbo.Matches WHERE Stage = '${stage_order}' 
+        `SELECT TOP 1 * FROM dbo.Matches WHERE Stage = '${stage_id}' 
         ORDER BY Match_Date`
     )).recordset;
     return upcoming_game;
