@@ -80,12 +80,13 @@ router.post('/', async(req, res, next) => {
                 match = match.recordset[0] || 0
                 const match_id = (match) ? match.Match_ID + 1 : match + 1;
                 DButils.execQuery(
-                        `INSERT INTO dbo.Matches (Match_ID, Home_Team_ID, Away_Team_ID, Referee_ID, Match_Date, Stadium, Stage)
+                        `INSERT INTO dbo.Matches (Match_ID, Home_Team_ID, Away_Team_ID, Referee_ID, Match_Date, Hour, Stadium, Stage)
                 VALUES ('${match_id}',
                 '${req.body.home_team_id}',
                 '${req.body.away_team_id}',
                 '${req.body.referee_id}',
                 '${req.body.date}',
+                '${req.body.hour}',
                 '${stadium}',
                 '${stage}')`)
                     .then(() => { res.status(201).send("match created") })
@@ -141,11 +142,16 @@ router.post('/', async(req, res, next) => {
 router.delete('/:match_id', async(req, res, next) => {
     DButils.execQuery(
             `DELETE FROM dbo.Matches WHERE Match_ID = '${req.params.match_id}'`
-        ).then((result) => {
+        ).then(async(result) => {
             if (result.rowsAffected[0] == 0)
                 res.status(404).send('match not found')
-            else
+            else {
+                const deleted = await DButils.execQuery(
+                    `DELETE FROM dbo.Favorite_Matches 
+                    WHERE Match_ID = '${req.params.match_id}'`
+                )
                 res.status(200).send("match deleted!")
+            }
         })
         .catch((err) => next(err))
 });

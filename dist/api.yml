@@ -10,10 +10,12 @@ tags:
   - name: players
   - name: coaches
   - name: teams
-  
+  - name: auth
 paths:
   /Login:
     post:
+      tags:
+        - auth
       summary: Logs into an user given an ID and password.
       description: 'user logs in using username and password.'
       requestBody:
@@ -29,6 +31,8 @@ paths:
           description: 'username or password incorrect.'
   /Logout:
     post:
+      tags:
+        - auth
       summary: User logs out from the system.
       responses:
         '200':
@@ -37,6 +41,8 @@ paths:
           description: 'log out failed.'
   /Register:
     post:
+      tags:
+        - auth
       summary: Register a new user
       requestBody:
         required: true
@@ -757,6 +763,10 @@ components:
           type: string
           description: match date
           example: 14/05/2021
+        hour:
+          type: string
+          description: match hour
+          example: '20:00'
         referee_id:
           type: integer
           description: referee's id

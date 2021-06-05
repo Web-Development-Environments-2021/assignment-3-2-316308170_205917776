@@ -14,7 +14,7 @@ async function markAsFavorite(user_id, favorite_id, table_name, attribute_ID) {
     if (exist) {
         result = -1;
         const check = (await DButils.execQuery(`SELECT ${attribute_ID} FROM Favorite_${table_name} 
-        WHERE ${attribute_ID} = '${favorite_id}'`)).recordset[0];
+        WHERE ${attribute_ID} = '${favorite_id}' AND Username = '${user_id}'`)).recordset[0];
         if (!check) {
             await DButils.execQuery(
                 `INSERT INTO Favorite_${table_name} VALUES ('${user_id}','${favorite_id}')`
@@ -36,7 +36,6 @@ async function getAllFavorites(user_id, attribute_ID, table_name) {
     return clean_ids
 
 }
-
 
 
 exports.markAsFavorite = markAsFavorite;

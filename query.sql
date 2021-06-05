@@ -3,6 +3,7 @@ CREATE TABLE Matches(
     Home_Team_ID INTEGER,
     Away_Team_ID INTEGER,
     Match_Date VARCHAR(20),
+    Hour VARCHAR(5),
     Stadium VARCHAR(50),
     Stage INTEGER,
     Score VARCHAR(10),

@@ -4,7 +4,6 @@ var display_details = null;
 const DButils = require("../routes/utils/DButils");
 const league_utils = require("../routes/utils/league_utils");
 const bcrypt = require("bcryptjs");
-const axios = require("axios");
 
 
 router.post("/Register", async(req, res, next) => {
@@ -24,14 +23,15 @@ router.post("/Register", async(req, res, next) => {
         req.body.password = hash_password;
         // add the new user to the DB.
         await DButils.execQuery(
-            `INSERT INTO dbo.Users (Username, First_name, Last_name, User_Password, Country,Email, User_Role) VALUES
+            `INSERT INTO dbo.Users (Username, First_name, Last_name, User_Password, Country,Email, Photo_URL, User_Role) VALUES
              ('${req.body.username}', 
              '${req.body.first_name}', 
              '${req.body.last_name}', 
              '${hash_password}', 
              '${req.body.country}',
-             '${req.body.email}', 
-             'Representative')`
+             '${req.body.email}',
+             '${req.body.photo_url}', 
+             'User')`
         );
         res.status(201).send("user created");
     } catch (error) {
@@ -40,9 +40,11 @@ router.post("/Register", async(req, res, next) => {
 });
 
 router.post("/Login", async(req, res, next) => {
+
     try {
-        if(req.user_id)
-            res.status(400).send("already logged in")
+        if (req.user_id) {
+            return res.status(400).send("already logged in")
+        }
         const user = (
             (await DButils.execQuery(
                 `SELECT * FROM dbo.Users WHERE username = '${req.body.username}'`
@@ -81,7 +83,6 @@ router.get("/", async function(req, res) {
         stage_name: league_details.current_stage_name,
         upcoming_game: upcoming_game_details[0]
     }
-    console.log(display_details);
     res.sendFile(`/index.html`, { root: './project' })
 });
 module.exports = router;

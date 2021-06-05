@@ -40,8 +40,7 @@ async function get_team_data(team_id, include) {
              WHERE Home_Team_ID = '${team_id}'
              OR Away_Team_ID = '${team_id}'`
         )).recordsets[0]
-        const filtered = matches.filter(match => match.Score != null)
-        team_details.push(filtered);
+        team_details.push(matches);
     }
     return team_details
 }

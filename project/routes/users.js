@@ -42,6 +42,7 @@ router.get("/favoriteMatches", async(req, res, next) => {
 router.post("/favoriteMatches", async(req, res, next) => {
     try {
         const user_id = req.user_id;
+        console.log(user_id, req.session.user_id);
         const match_id = req.body.match_id;
         const table_name = "Matches"
         const attribute_ID = "Match_ID"
