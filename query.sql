@@ -48,7 +48,9 @@ INSERT INTO Referees  VALUES
 ('5','Naor Suban');
 
 
-DROP TABLE Matches
-DROP TABLE Users
+-- DROP TABLE Matches
+-- DROP TABLE Users
 DROP TABLE Favorite_Matches
-DROP TABLE Referees
+DROP TABLE Favorite_Teams
+DROP TABLE Favorite_Players
+-- DROP TABLE Referees
