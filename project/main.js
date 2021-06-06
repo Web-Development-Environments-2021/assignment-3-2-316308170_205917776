@@ -1,8 +1,5 @@
 //#region global imports
 const DButils = require("./routes/utils/DButils");
-const players_utils = require("./routes/utils/players_utils")
-const axios = require("axios");
-const bcrypt = require("bcryptjs");
 require("dotenv").config();
 //#endregion
 //#region express configures
@@ -51,12 +48,10 @@ const port = process.env.PORT || "3000";
 
 const auth = require("./routes/auth");
 const users = require("./routes/users");
-const league = require("./routes/league");
 const teams = require("./routes/teams");
 const players = require("./routes/players")
 const coaches = require("./routes/coaches")
 const matches = require("./routes/matches")
-const referees = require("./routes/referees")
 
 //#region cookie middleware
 app.use(function(req, res, next) {
@@ -66,12 +61,10 @@ app.use(function(req, res, next) {
                 const users = result.recordset
                 if (users.find((x) => x.Username === req.session.user_id)) {
                     req.user_id = req.session.user_id;
-                    console.log(req.user_id);
                 }
                 next();
             })
             .catch((error) => next());
-
     } else {
         next();
     }
@@ -89,24 +82,17 @@ app.get("/alive", (req, res) => {
     res.send("I'm alive")
 });
 
-
 // Routings
-
 app.use("/users", users);
-app.use("/league", league);
 app.use("/teams", teams);
 app.use("/players", players);
 app.use('/coaches', coaches);
 app.use('/matches', matches);
-app.use('/referees', referees);
 app.use(auth);
-
-
 
 const server = app.listen(port, () => {
     console.log(`Server listen on port ${port}`);
 });
-
 
 
 // process.on("SIGINT", function () {

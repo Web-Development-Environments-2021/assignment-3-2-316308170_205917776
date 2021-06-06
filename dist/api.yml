@@ -280,17 +280,21 @@ paths:
         '404':
           description: 'match doesnt found.'      
 
-  /matches/set_all_matches:
-    post:
+  /matches/representative/get_all_matches:
+    get:
       tags: 
         - matches
-    summary: Create all matches.
-    description: Set all new match.  
-    responses:
-      '200':
-        description: 'all good'
-      '500':
-        description: 'something is wrong'
+      summary: Get all existing matches.
+      description: Get all existing matches.  
+      responses:
+        '200':
+          description: 'successful retrieve'
+          content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/get_all_matches'
+        '500':
+          description: 'something is wrong'
   /players/{player_id}/preview:
     get:
       tags:
@@ -479,6 +483,11 @@ paths:
 
 components:
   schemas:
+    get_all_matches:
+      type: array
+      items:
+        type: integer
+        example: 1
     user_login:
       type: object
       properties:

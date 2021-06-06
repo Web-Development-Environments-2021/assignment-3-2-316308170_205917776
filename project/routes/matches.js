@@ -4,8 +4,8 @@ const DButils = require("./utils/DButils");
 const teams_utils = require("./utils/teams_utils")
 const league_utils = require("./utils/league_utils")
 
-router.get('/:match_id', async(req, res, next) => {
 
+router.get('/:match_id', async(req, res, next) => {
     try {
         const data = (await DButils.execQuery(
             `SELECT * FROM dbo.Matches WHERE Match_ID = '${req.params.match_id}'`
@@ -17,7 +17,7 @@ router.get('/:match_id', async(req, res, next) => {
     }
 });
 
-
+// Middleware, from here only Representative users can reach the endpoints.
 router.use(async(req, res, next) => {
     let user_name = await req.session.user_id
     if (req.session && req.session.user_id) {
@@ -36,17 +36,19 @@ router.use(async(req, res, next) => {
     }
 });
 
-router.get('/all_matches', async(req, res, next) => {
+router.get('/representative/get_all_matches', async(req, res, next) => {
     try {
         const all_matches = (await DButils.execQuery(
-            `SELECT * FROM dbo.Matches`
+            `SELECT Match_ID FROM dbo.Matches`
         )).recordset;
-        console.log(all_matches);
-        res.status(200).send(all_matches)
+        matches_ids = []
+        all_matches.map((match) => matches_ids.push(match.Match_ID))
+        res.status(200).send(matches_ids)
     } catch (error) {
         next(error);
     }
 })
+
 
 router.put('/', async(req, res, next) => {
     try {
@@ -70,6 +72,8 @@ router.put('/', async(req, res, next) => {
 });
 
 router.post('/', async(req, res, next) => {
+    // Optional, if no stadium or stage was sent by client, 
+    // choose the home team's stadium and the current stage of league.
     const stadium = req.body.stadium || await (teams_utils.get_stadium_by_team_id(req.body.home_team_id));
     const stage = req.body.stage || (await league_utils.getLeagueDetails()).current_stage_id
     try {
@@ -96,47 +100,6 @@ router.post('/', async(req, res, next) => {
         next(error);
     }
 });
-
-// router.post('/set_all_matches', async(req, res, next) => {
-//     let all_teams = await league_utils.get_all_teams_in_league();
-//     // console.log(all_teams);
-//     const all_pairs = []
-//     for (let i = 0; i < all_teams.length - 1; i++) {
-//         for (let j = i + 1; j < all_teams.length; j++) {
-//             all_pairs.push([all_teams[i], all_teams[j]])
-//             all_pairs.push([all_teams[j], all_teams[i]])
-//         }
-//     }
-//     for (let i = 0; i < all_pairs.length; i++) {
-//         // console.log(all_pairs[i]);
-//         const stadium = await teams_utils.get_stadium_by_team_id(all_pairs[i][0]);
-//         const stage = parseInt((await league_utils.getLeagueDetails()).current_stage_id)
-//         let referee_id = 1 + Math.round(Math.random() * 4)
-//         let today = new Date().toISOString().slice(0, 10)
-//             // console.log(stadium, stage, referee_id, today);
-//         try {
-//             await DButils.execQuery(
-//                     "SELECT TOP 1 Match_ID FROM dbo.Matches ORDER BY Match_ID DESC"
-//                 )
-//                 .then((match) => {
-//                     match = match.recordset[0] || 0
-//                     const match_id = (match) ? match.Match_ID + 1 : match + 1;
-//                     console.log(match);
-//                     DButils.execQuery(
-//                         `INSERT INTO dbo.Matches (Match_ID, Home_Team_ID, Away_Team_ID, Referee_ID, Match_Date, Stadium, Stage)
-//                             VALUES ('${match_id}',
-//                             '${all_pairs[i][0]}',
-//                             '${all_pairs[i][1]}',
-//                             '${referee_id}',
-//                             '${today}',
-//                             '${stadium}',
-//                             '${stage}')`)
-//                 })
-//         } catch (error) {
-//             next(error);
-//         }
-//     }
-// });
 
 
 router.delete('/:match_id', async(req, res, next) => {

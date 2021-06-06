@@ -2,6 +2,12 @@ const axios = require("axios");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 const league_utils = require("./league_utils");
 
+
+/**
+ * Function search all coaches that their names matches the keyword, using sportmonks API.
+ * @param {string} keyword 
+ * @returns filtered array of all coaches which their name includes keyword.
+ */
 async function search_coaches_by_name(keyword) {
     let season_id = (await league_utils.getLeagueDetails()).current_season_id;
     const all_teams = (await axios.get(
@@ -19,9 +25,14 @@ async function search_coaches_by_name(keyword) {
     console.log(coaches);
     const filtered = coaches.filter(coach => coach.coach_name != null && coach.coach_name.includes(keyword))
     return filtered;
-    // next game details should come from DB
 }
 
+
+/**
+ * Get full data on coach given it's ID, using sportmonks API.
+ * @param {number} coach_id 
+ * @returns Object with coach's full data.
+ */
 async function get_coach_full_data(coach_id) {
     const coach_info = (await axios.get(
         `${api_domain}/coaches/${coach_id}`, {
@@ -48,6 +59,11 @@ async function get_coach_full_data(coach_id) {
     };
 }
 
+/**
+ * Get coach preview data, using the get_full_data function.
+ * @param {number} coach_id 
+ * @returns Object with coach's preview data.
+ */
 async function get_coach_preview(coach_id) {
     let full_data = await get_coach_full_data(coach_id);
     return {

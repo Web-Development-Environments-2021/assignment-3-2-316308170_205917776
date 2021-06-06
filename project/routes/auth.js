@@ -1,6 +1,6 @@
 var express = require("express");
 var router = express.Router();
-var display_details = null;
+var display_details;
 const DButils = require("../routes/utils/DButils");
 const league_utils = require("../routes/utils/league_utils");
 const bcrypt = require("bcryptjs");
@@ -21,7 +21,7 @@ router.post("/Register", async(req, res, next) => {
             parseInt(process.env.bcrypt_saltRounds)
         );
         req.body.password = hash_password;
-        // add the new user to the DB.
+        // add the new user to the DB, default role is User.
         await DButils.execQuery(
             `INSERT INTO dbo.Users (Username, First_name, Last_name, User_Password, Country,Email, Photo_URL, User_Role) VALUES
              ('${req.body.username}', 
@@ -40,8 +40,8 @@ router.post("/Register", async(req, res, next) => {
 });
 
 router.post("/Login", async(req, res, next) => {
-
     try {
+        // user already logged in.
         if (req.user_id) {
             return res.status(400).send("already logged in")
         }
@@ -64,6 +64,7 @@ router.post("/Login", async(req, res, next) => {
 });
 
 router.post("/Logout", async(req, res, next) => {
+    // check if user is loggen in.
     if (req.session.user_id) {
         req.session.reset(); // reset the session info --> send cookie when  req.session == undefined!!
         res.status(200).send({ success: true, message: "logout succeeded" });
@@ -73,16 +74,17 @@ router.post("/Logout", async(req, res, next) => {
 });
 
 
-
 router.get("/", async function(req, res) {
     let league_details = await league_utils.getLeagueDetails();
     let upcoming_game_details = await league_utils.getUpcomingGame(league_details.current_stage_id);
+    // get relevant details to display on main page.
     display_details = {
-        league_name: league_details.league_name,
-        season_name: league_details.current_season_name,
-        stage_name: league_details.current_stage_name,
-        upcoming_game: upcoming_game_details[0]
-    }
+            league_name: league_details.league_name,
+            season_name: league_details.current_season_name,
+            stage_name: league_details.current_stage_name,
+            upcoming_game: upcoming_game_details[0]
+        }
+        // send index.html to client.
     res.sendFile(`/index.html`, { root: './project' })
 });
 module.exports = router;

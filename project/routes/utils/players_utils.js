@@ -1,11 +1,14 @@
 const axios = require("axios");
 const api_domain = "https://soccer.sportmonks.com/api/v2.0";
-const league_utils = require("./league_utils")
 const coach_utils = require("./coaches_utils")
 const SEASON_ID = 18334
 
-
-
+/**
+ * Function get all ids of team's squad (players and coach) 
+ * given the team id, using sportmonks API.
+ * @param {number} team_id 
+ * @returns array of all ids.
+ */
 async function getSquadIdsByTeam(team_id) {
     let player_ids_list = [];
     const team = await axios.get(`${api_domain}/teams/${team_id}`, {
@@ -20,6 +23,12 @@ async function getSquadIdsByTeam(team_id) {
     return [player_ids_list, team.data.data.coach.data.coach_id];
 }
 
+/**
+ * Function retrieves info about every player in the given ids list, 
+ * using sportmonks API.
+ * @param {array} players_ids_list 
+ * @returns array of objects, each contains data about player.
+ */
 async function getPlayersInfo(players_ids_list) {
     let promises = [];
     players_ids_list.map((id) =>
@@ -36,6 +45,12 @@ async function getPlayersInfo(players_ids_list) {
     return extractRelevantPlayerData(players_info);
 }
 
+/**
+ * Private function (not exported). Given array of all players info, extract the relevant
+ * information about each player.
+ * @param {array} players_info 
+ * @returns array of objects - each includes only relevant player info.
+ */
 function extractRelevantPlayerData(players_info) {
     return players_info.map((player_info) => {
         const { fullname, image_path, position_id } = player_info.data.data;
@@ -49,6 +64,11 @@ function extractRelevantPlayerData(players_info) {
     });
 }
 
+/**
+ * Function gets all squad (players and coach) information using another functions.
+ * @param {number} team_id 
+ * @returns array including team information and coach information.
+ */
 async function getSquadByTeam(team_id) {
     let team_ids_list = await getSquadIdsByTeam(team_id);
     let team_info = await getPlayersInfo(team_ids_list[0]);
@@ -56,6 +76,14 @@ async function getSquadByTeam(team_id) {
     return [team_info, coach_info];
 }
 
+/**
+ * Function gets a keyword to search players by it.
+ * The function searches trough all_players array, and return every 
+ * player that his name matches the keyword.
+ * @param {string} keyword 
+ * @param {array} all_players 
+ * @returns array of players who's names matches the keyword.
+ */
 async function search_players_by_name(keyword, all_players) {
     let filtered = []
     all_players.map(
@@ -67,6 +95,11 @@ async function search_players_by_name(keyword, all_players) {
     return filtered;
 }
 
+/**
+ * Function gets full data on player given it's ID, using sportmonks API.
+ * @param {number} player_id 
+ * @returns Object with full data about the player
+ */
 async function get_player_full_data(player_id) {
     const player_info = (await axios.get(
         `${api_domain}/players/${player_id}`, {
@@ -96,6 +129,11 @@ async function get_player_full_data(player_id) {
     };
 }
 
+/**
+ * Function gets preview data on player, using the get_full_data function.
+ * @param {number} player_id 
+ * @returns Object with player's preview data.
+ */
 async function get_player_preview(player_id) {
     let full_data = await get_player_full_data(player_id);
     return {
@@ -106,6 +144,10 @@ async function get_player_preview(player_id) {
     }
 }
 
+/**
+ * Function gets all players that play this season in Superliga, using sportmonks API.
+ * @returns array of objects, each object contains player's ID and name.
+ */
 async function get_all_players_in_season() {
     const all_teams = (await axios.get(`${api_domain}/teams/season/${SEASON_ID}`, {
         params: {
