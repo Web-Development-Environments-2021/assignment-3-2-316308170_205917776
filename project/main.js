@@ -64,18 +64,11 @@ app.use(function(req, res, next) {
                 }
                 next();
             })
-            .catch((error) => next());
+            .catch((error) => next(error));
     } else {
         next();
     }
 });
-//#endregion
-
-
-app.use(function(err, req, res, next) {
-    res.status(err.status || 500).send(err.message);
-});
-
 
 // ----> For cheking that our server is alive
 app.get("/alive", (req, res) => {
@@ -89,6 +82,11 @@ app.use("/players", players);
 app.use('/coaches', coaches);
 app.use('/matches', matches);
 app.use(auth);
+
+app.use(function(err, req, res, next) {
+    res.status(err.status || 500).send(err.message);
+});
+
 
 const server = app.listen(port, () => {
     console.log(`Server listen on port ${port}`);

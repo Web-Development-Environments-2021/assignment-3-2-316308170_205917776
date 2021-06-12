@@ -9,12 +9,14 @@ const bcrypt = require("bcryptjs");
 router.post("/Register", async(req, res, next) => {
     try {
         // get all users from the DB.
-        const users = (await DButils.execQuery(
-            "SELECT Username FROM dbo.Users"
+        const exists = (await DButils.execQuery(
+            "SELECT Username,Email FROM dbo.Users"
         )).recordset;
         // check for a match based on the username, if not found: return 409 status, else continue
-        if (users.find((x) => x.Username === req.body.username))
+        if (exists.find((x) => x.Username === req.body.username))
             throw { status: 409, message: "Username taken" };
+        if (exists.find((x) => x.Email === req.body.email))
+            throw { status: 409, message: "Email taken" };
         //hash the password
         let hash_password = bcrypt.hashSync(
             req.body.password,
