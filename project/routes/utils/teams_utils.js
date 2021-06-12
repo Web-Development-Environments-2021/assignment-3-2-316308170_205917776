@@ -91,8 +91,6 @@ async function get_team_preview(team_id) {
     };
 }
 
-
-exports.get_team_preview = get_team_preview;
 exports.search_team_by_name = search_team_by_name;
 exports.get_team_data = get_team_data;
 exports.get_stadium_by_team_id = get_stadium_by_team_id;

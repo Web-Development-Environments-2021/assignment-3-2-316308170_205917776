@@ -56,8 +56,6 @@ const league = require("./routes/league");
 
 //#region cookie middleware
 app.use(function(req, res, next) {
-    console.log(req.session);
-    console.log(req.session.user_id);
     if (req.session && req.session.user_id) {
         DButils.execQuery("SELECT Username FROM dbo.Users")
             .then((result) => {

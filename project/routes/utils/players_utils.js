@@ -120,6 +120,7 @@ async function get_player_full_data(player_id) {
         name: player_info.fullname,
         photo_path: player_info.image_path,
         position: player_info.position_id,
+        team_id: player_info.team_id,
         team_name: team_name,
         common_name: player_info.common_name,
         birthdate: player_info.birthdate,
@@ -137,8 +138,10 @@ async function get_player_full_data(player_id) {
  */
 async function get_player_preview(player_id) {
     let full_data = await get_player_full_data(player_id);
+    console.log(full_data);
     return {
         name: full_data.name,
+        team_id: full_data.team_id,
         team_name: full_data.team_name,
         photo_path: full_data.photo_path,
         position: full_data.position

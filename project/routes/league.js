@@ -6,7 +6,6 @@ var all_stages;
 router.get("/stages/:stage_id", async(req, res, next) => {
     try {
         if (!all_stages) {
-            console.log("look for stages");
             const stages = await league_utils.get_all_stages();
             all_stages = stages;
         }

@@ -51,6 +51,7 @@ async function get_coach_full_data(coach_id) {
     return {
         name: coach_info.fullname,
         photo_path: coach_info.image_path,
+        team_id: coach_info.team_id,
         team_name: team_name,
         common_name: coach_info.common_name,
         birthdate: coach_info.birthdate,
@@ -70,7 +71,8 @@ async function get_coach_preview(coach_id) {
         name: full_data.name,
         photo_path: full_data.photo_path,
         position: full_data.position,
-        team_name: full_data.team_name
+        team_name: full_data.team_name,
+        team_id: full_data.team_id
     }
 }
 

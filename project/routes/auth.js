@@ -77,6 +77,7 @@ router.post("/Logout", async(req, res, next) => {
 
 
 router.get("/", async function(req, res) {
+    console.log('in details');
     let league_details = await league_utils.getLeagueDetails();
     let upcoming_game_details = await league_utils.getUpcomingGame(league_details.current_stage_id);
     // get relevant details to display on main page.
@@ -87,6 +88,6 @@ router.get("/", async function(req, res) {
             upcoming_game: upcoming_game_details[0]
         }
         // send index.html to client.
-    res.sendFile(`/index.html`, { root: './project' })
+    res.status(200).send(display_details)
 });
 module.exports = router;
