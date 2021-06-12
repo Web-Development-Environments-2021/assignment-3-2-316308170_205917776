@@ -78,6 +78,21 @@ async function get_team_data(team_id, include) {
     return team_details
 }
 
+
+async function get_team_preview(team_id) {
+    const team = (await axios.get(`${api_domain}/teams/${team_id}`, {
+        params: {
+            api_token: process.env.api_token
+        }
+    })).data.data;
+    return {
+        name: team.name,
+        logo_path: team.logo_path
+    };
+}
+
+
+exports.get_team_preview = get_team_preview;
 exports.search_team_by_name = search_team_by_name;
 exports.get_team_data = get_team_data;
 exports.get_stadium_by_team_id = get_stadium_by_team_id;

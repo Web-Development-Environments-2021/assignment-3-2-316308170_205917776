@@ -24,13 +24,22 @@ router.get("/:team_id", async(req, res, next) => {
         const team_details = await team_utils.get_team_data(req.params.team_id, req.query.include)
         result.team = team_details[0];
         result.coach = team_details[1];
-        if (team_details.length > 2)
-            result.matches = team_details[2];
+        result.logo = team_details[2];
+        if (team_details.length > 3)
+            result.matches = team_details[3];
         res.send(result);
     } catch (error) {
         next(error);
     }
 });
 
+router.get("/:team_id/preview", async(req, res, next) => {
+    try {
+        const team_preview = await team_utils.get_team_preview(req.params.team_id);
+        res.status(200).send(team_preview);
+    } catch (error) {
+        next(error);
+    }
+});
 
 module.exports = router;

@@ -4,7 +4,6 @@ const DButils = require("./utils/DButils");
 const teams_utils = require("./utils/teams_utils")
 const league_utils = require("./utils/league_utils")
 
-
 router.get('/:match_id', async(req, res, next) => {
     try {
         const data = (await DButils.execQuery(
@@ -118,6 +117,9 @@ router.delete('/:match_id', async(req, res, next) => {
         })
         .catch((err) => next(err))
 });
+
+
+
 
 
 module.exports = router;

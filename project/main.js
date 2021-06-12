@@ -52,9 +52,12 @@ const teams = require("./routes/teams");
 const players = require("./routes/players")
 const coaches = require("./routes/coaches")
 const matches = require("./routes/matches")
+const league = require("./routes/league");
 
 //#region cookie middleware
 app.use(function(req, res, next) {
+    console.log(req.session);
+    console.log(req.session.user_id);
     if (req.session && req.session.user_id) {
         DButils.execQuery("SELECT Username FROM dbo.Users")
             .then((result) => {
@@ -81,6 +84,7 @@ app.use("/teams", teams);
 app.use("/players", players);
 app.use('/coaches', coaches);
 app.use('/matches', matches);
+app.use('/league', league);
 app.use(auth);
 
 app.use(function(err, req, res, next) {

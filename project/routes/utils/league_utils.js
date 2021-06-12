@@ -92,6 +92,38 @@ async function getLeagueDetails() {
         current_stage_id: stage.id
     };
 }
+
+async function get_all_stadiums(all_teams) {
+    all_stadiums = {}
+    for (let i = 0; i < all_teams.length; i++) {
+        const stadium = (await axios.get(
+            `${api_domain}/teams/${all_teams[i]}`, {
+                params: {
+                    include: "TEAM_NAME",
+                    include: "venue",
+                    api_token: process.env.api_token,
+                },
+            }
+        )).data.data.venue.data.name;
+        all_stadiums[all_teams[i]] = stadium;
+    }
+    return all_stadiums;
+}
+
+async function get_all_stages() {
+    const stages = (await axios.get(
+        `${api_domain}/seasons/${SEASON_ID}`, {
+            params: {
+                include: "stages",
+                api_token: process.env.api_token,
+            },
+        }
+    )).data.data.stages.data;
+    return stages;
+}
+
+exports.get_all_stages = get_all_stages;
+exports.get_all_stadiums = get_all_stadiums;
 exports.getLeagueDetails = getLeagueDetails;
 exports.getUpcomingGame = getUpcomingGame;
 exports.get_all_teams_in_league = get_all_teams_in_league;

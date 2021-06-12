@@ -20,7 +20,7 @@ async function getSquadIdsByTeam(team_id) {
     team.data.data.squad.data.map((player) =>
         player_ids_list.push(player.player_id)
     );
-    return [player_ids_list, team.data.data.coach.data.coach_id];
+    return [player_ids_list, team.data.data.coach.data.coach_id, team.data.data.logo_path];
 }
 
 /**
@@ -73,7 +73,8 @@ async function getSquadByTeam(team_id) {
     let team_ids_list = await getSquadIdsByTeam(team_id);
     let team_info = await getPlayersInfo(team_ids_list[0]);
     let coach_info = await coach_utils.get_coach_preview(team_ids_list[1]);
-    return [team_info, coach_info];
+    let team_logo = team_ids_list[2]
+    return [team_info, coach_info, team_logo];
 }
 
 /**
