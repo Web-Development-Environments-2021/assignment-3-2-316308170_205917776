@@ -167,7 +167,8 @@ async function get_all_players_in_season() {
                 (player) => {
                     all_players.push({
                         id: player.player.data.player_id,
-                        name: player.player.data.fullname
+                        name: player.player.data.fullname,
+                        team: team.name
                     })
                 }
             )

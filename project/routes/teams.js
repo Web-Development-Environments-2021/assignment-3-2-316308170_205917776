@@ -8,8 +8,8 @@ router.get("/search", async(req, res, next) => {
     try {
         const all_teams = await team_utils.search_team_by_name(keyword);
         all_teams.map((team) => data.push({
-            team_id: team.id,
-            team_name: team.name
+            id: team.id,
+            name: team.name
         }));
         res.send(data);
     } catch (error) {

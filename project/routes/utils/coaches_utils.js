@@ -19,11 +19,11 @@ async function search_coaches_by_name(keyword) {
         })).data.data;
     let coaches = []
     all_teams.map((team) => coaches.push({
-        coach_id: team.coach.data.coach_id,
-        coach_name: team.coach.data.fullname
+        id: team.coach.data.coach_id,
+        name: team.coach.data.fullname,
+        team: team.name
     }))
-    console.log(coaches);
-    const filtered = coaches.filter(coach => coach.coach_name != null && coach.coach_name.includes(keyword))
+    const filtered = coaches.filter(coach => coach.name != null && coach.name.includes(keyword))
     return filtered;
 }
 
