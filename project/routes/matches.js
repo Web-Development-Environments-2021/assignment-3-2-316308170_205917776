@@ -4,6 +4,19 @@ const DButils = require("./utils/DButils");
 const teams_utils = require("./utils/teams_utils")
 const league_utils = require("./utils/league_utils")
 
+router.get('/get_all_matches', async(req, res, next) => {
+    try {
+        const all_matches = (await DButils.execQuery(
+            `SELECT Match_ID FROM dbo.Matches`
+        )).recordset;
+        matches_ids = []
+        all_matches.map((match) => matches_ids.push(match.Match_ID))
+        res.status(200).send(matches_ids)
+    } catch (error) {
+        next(error);
+    }
+})
+
 router.get('/:match_id', async(req, res, next) => {
     try {
         const data = (await DButils.execQuery(
@@ -34,19 +47,6 @@ router.use(async(req, res, next) => {
         res.sendStatus(401);
     }
 });
-
-router.get('/representative/get_all_matches', async(req, res, next) => {
-    try {
-        const all_matches = (await DButils.execQuery(
-            `SELECT Match_ID FROM dbo.Matches`
-        )).recordset;
-        matches_ids = []
-        all_matches.map((match) => matches_ids.push(match.Match_ID))
-        res.status(200).send(matches_ids)
-    } catch (error) {
-        next(error);
-    }
-})
 
 
 router.put('/', async(req, res, next) => {
