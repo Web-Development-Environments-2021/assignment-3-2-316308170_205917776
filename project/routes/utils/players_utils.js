@@ -140,8 +140,8 @@ async function get_player_full_data(player_id) {
  */
 async function get_player_preview(player_id) {
     let full_data = await get_player_full_data(player_id);
-    console.log(full_data);
     return {
+        id: player_id,
         name: full_data.name,
         team_id: full_data.team_id,
         team_name: full_data.team_name,

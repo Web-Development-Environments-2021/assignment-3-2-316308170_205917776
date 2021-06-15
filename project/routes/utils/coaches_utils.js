@@ -41,7 +41,6 @@ async function get_coach_full_data(coach_id) {
             }
         }
     )).data.data;
-    console.log(coach_info);
     const team_name = (await axios.get(
         `${api_domain}/teams/${coach_info.team_id}`, {
             params: {
@@ -49,8 +48,6 @@ async function get_coach_full_data(coach_id) {
             }
         }
     )).data.data.name;
-    console.log("*******************");
-    console.log(team_name);
     return {
         name: coach_info.fullname,
         photo_path: coach_info.image_path,

@@ -86,6 +86,7 @@ async function get_team_preview(team_id) {
         }
     })).data.data;
     return {
+        id: team_id,
         name: team.name,
         logo_path: team.logo_path,
         short_code: team.short_code,

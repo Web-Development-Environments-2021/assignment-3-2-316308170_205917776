@@ -5,14 +5,12 @@ const teams_utils = require("./utils/teams_utils");
 var all_stages;
 
 const get = async() => {
-    console.log("create ")
     await league_utils.get_all_league_entities();
 }
 get();
 
 router.get("/getAll", async(req, res, next) => {
     try {
-        console.log(league_utils.all_players.length);
         res.status(200).send([league_utils.all_teams, league_utils.all_players, league_utils.all_coaches])
     } catch (error) {
         next(error);
