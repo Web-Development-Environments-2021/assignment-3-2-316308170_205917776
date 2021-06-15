@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
-const league_utils = require("./utils/league_utils")
+const league_utils = require("./utils/league_utils");
+const teams_utils = require("./utils/teams_utils");
 var all_stages;
 
 router.get("/stages/:stage_id", async(req, res, next) => {
@@ -18,6 +19,23 @@ router.get("/stages/:stage_id", async(req, res, next) => {
             res.status(200).send(stage)
         else
             res.status(404).send('no such stage');
+    } catch (error) {
+        next(error);
+    }
+});
+
+
+router.get('/get_all_teams', async(req, res, next) => {
+    try {
+        const all_teams_ids = await league_utils.get_all_teams_in_league();
+        const all_teams = []
+        all_teams_ids.map(
+            async(team_id) => {
+                const team_data = await teams_utils.get_team_data(team_id, "matches");
+                all_teams.push({ team_id: team_data })
+            }
+        )
+        res.status(200).send(all_teams);
     } catch (error) {
         next(error);
     }

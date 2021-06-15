@@ -53,9 +53,10 @@ async function getPlayersInfo(players_ids_list) {
  */
 function extractRelevantPlayerData(players_info) {
     return players_info.map((player_info) => {
-        const { fullname, image_path, position_id } = player_info.data.data;
+        const { player_id, fullname, image_path, position_id } = player_info.data.data;
         const { name } = player_info.data.data.team.data;
         return {
+            player_id: player_id,
             name: fullname,
             image: image_path,
             position: position_id,
@@ -72,6 +73,7 @@ function extractRelevantPlayerData(players_info) {
 async function getSquadByTeam(team_id) {
     let team_ids_list = await getSquadIdsByTeam(team_id);
     let team_info = await getPlayersInfo(team_ids_list[0]);
+    console.log(team_info);
     let coach_info = await coach_utils.get_coach_preview(team_ids_list[1]);
     let team_logo = team_ids_list[2]
     return [team_info, coach_info, team_logo];
@@ -155,7 +157,7 @@ async function get_player_preview(player_id) {
 async function get_all_players_in_season() {
     const all_teams = (await axios.get(`${api_domain}/teams/season/${SEASON_ID}`, {
         params: {
-            include: "squad.player.team",
+            include: "squad.player",
             api_token: process.env.api_token,
         },
     })).data.data
