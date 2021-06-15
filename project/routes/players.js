@@ -1,19 +1,20 @@
 var express = require("express");
 var router = express.Router();
 const players_utils = require("./utils/players_utils");
-var all_players = null
+const league_utils = require("./utils/league_utils");
 
-router.use(async(req, res, next) => {
-    if (all_players == null)
-        all_players = await players_utils.get_all_players_in_season();
-    next();
-})
+
+// router.use(async(req, res, next) => {
+//     if (league_utils.all_players == null)
+//         league_utils.all_players = await league_utils.get_all_players_in_season();
+//     next();
+// })
 
 
 router.get("/search", async(req, res, next) => {
     let keyword = req.query.keyword;
     try {
-        const relevant_players = await players_utils.search_players_by_name(keyword, all_players);
+        const relevant_players = await players_utils.search_players_by_name(keyword, league_utils.all_players);
         res.status(200).send(relevant_players);
     } catch (error) {
         next(error);
