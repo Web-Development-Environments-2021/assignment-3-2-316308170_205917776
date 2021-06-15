@@ -5,23 +5,22 @@ const api_domain = "https://soccer.sportmonks.com/api/v2.0";
 const DButils = require('./DButils')
 const teams_utils = require('./teams_utils');
 
-var all_players;
-var all_coaches;
-var all_teams;
+var all_players = [];
+var all_coaches = [];
+var all_teams = [];
 
 async function get_all_league_entities() {
     // if (all_teams)
     //     return [all_teams, all_players, all_coaches]
     const all_teams_data = (await axios.get(`${api_domain}/teams/season/${SEASON_ID}`, {
         params: {
-            include: "squad.player",
-            include: "coach",
+            include: "squad.player,coach",
             api_token: process.env.api_token,
         },
     })).data.data
     all_teams_data.map(
-        (team_data) => {
-            const stadium = teams_utils.get_stadium_by_team_id(team_data.id);
+        async(team_data) => {
+            const stadium = await teams_utils.get_stadium_by_team_id(team_data.id);
             all_teams.push({
                 id: team_data.id,
                 name: team_data.name,

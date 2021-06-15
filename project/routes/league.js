@@ -8,6 +8,7 @@ const get = async() =>{
     console.log("create ")
     await league_utils.get_all_league_entities();
 }
+get();
 
 router.get("/getAll", async(req,res,next) => {
     try {
