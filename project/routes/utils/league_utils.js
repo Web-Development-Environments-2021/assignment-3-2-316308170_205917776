@@ -37,7 +37,7 @@ async function get_all_league_entities() {
                 nationality: team_data.coach.data.nationality,
                 birthdate: team_data.coach.data.birthdate,
                 birth_country: team_data.coach.data.birthcountry,
-                photo: team_data.coach.data.image_path
+                photo_path: team_data.coach.data.image_path
             })
             team_data.squad.data.map(
                 (player) => {
@@ -53,7 +53,7 @@ async function get_all_league_entities() {
                         birthdate: player_info.birthdate,
                         height: player_info.height,
                         weight: player_info.weight,
-                        image_path: player_info.image_path
+                        photo_path: player_info.image_path
                     })
                 }
             )

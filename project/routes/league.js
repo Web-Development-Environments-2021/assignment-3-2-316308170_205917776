@@ -4,15 +4,16 @@ const league_utils = require("./utils/league_utils");
 const teams_utils = require("./utils/teams_utils");
 var all_stages;
 
-const get = async() =>{
+const get = async() => {
     console.log("create ")
     await league_utils.get_all_league_entities();
 }
 get();
 
-router.get("/getAll", async(req,res,next) => {
+router.get("/getAll", async(req, res, next) => {
     try {
-        res.status(200).send([league_utils.all_teams,league_utils.all_players,league_utils.all_coaches])
+        console.log(league_utils.all_players.length);
+        res.status(200).send([league_utils.all_teams, league_utils.all_players, league_utils.all_coaches])
     } catch (error) {
         next(error);
     }
