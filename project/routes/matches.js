@@ -22,7 +22,7 @@ router.get('/:match_id', async(req, res, next) => {
         const data = (await DButils.execQuery(
             `SELECT * FROM dbo.Matches WHERE Match_ID = '${req.params.match_id}'`
         )).recordset
-        delete data[0].Match_ID;
+        // delete data[0].Match_ID;
         res.send(data);
     } catch (error) {
         next(error);
