@@ -79,13 +79,13 @@ router.get("/favoritePlayers", async(req, res, next) => {
     try {
         const user_id = req.user_id;
         const favorites = await users_utils.getAllFavorites(user_id, "Player_ID", "Players");
-        const promises = []
-        favorites.map((player) => promises.push(players_utils.get_player_preview(player)));
-        let final_data = await Promise.all(promises);
-        if (final_data.length == 0)
+        // const promises = []
+        // favorites.map((player) => promises.push(players_utils.get_player_preview(player)));
+        // let final_data = await Promise.all(promises);
+        if (favorites.length == 0)
             res.status(404).send('no favorite players')
         else
-            res.status(200).send(final_data)
+            res.status(200).send(favorites)
     } catch (error) {
         next(error);
     }
@@ -129,10 +129,10 @@ router.get("/favoriteTeams", async(req, res, next) => {
     try {
         const user_id = req.user_id;
         const favorites = await users_utils.getAllFavorites(user_id, "Team_ID", "Teams");
-        const promises = []
-        favorites.map((team_id) => promises.push(teams_utils.get_team_preview(team_id)));
-        let final_data = await Promise.all(promises);
-        if (final_data.length == 0)
+        // const promises = []
+        // favorites.map((team_id) => promises.push(teams_utils.get_team_preview(team_id)));
+        // let final_data = await Promise.all(promises);
+        if (favorites.length == 0)
             res.status(404).send('no favorite teams')
         else
             res.status(200).send(final_data)

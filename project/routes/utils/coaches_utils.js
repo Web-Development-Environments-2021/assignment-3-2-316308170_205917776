@@ -49,6 +49,7 @@ async function get_coach_full_data(coach_id) {
         }
     )).data.data.name;
     return {
+        id: coach_id,
         name: coach_info.fullname,
         photo_path: coach_info.image_path,
         team_id: coach_info.team_id,
