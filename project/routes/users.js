@@ -135,7 +135,7 @@ router.get("/favoriteTeams", async(req, res, next) => {
         if (favorites.length == 0)
             res.status(404).send('no favorite teams')
         else
-            res.status(200).send(final_data)
+            res.status(200).send(favorites)
     } catch (error) {
         next(error);
     }
