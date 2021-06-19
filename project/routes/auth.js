@@ -59,7 +59,7 @@ router.post("/Login", async(req, res, next) => {
         // Set cookie
         req.session.user_id = user.Username;
         // return cookie
-        res.status(200).send(req.session.user_id);
+        res.status(200).send(user.User_Role);
     } catch (error) {
         next(error);
     }
