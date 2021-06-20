@@ -1,6 +1,8 @@
 var express = require("express");
 var router = express.Router();
 const team_utils = require("./utils/teams_utils");
+const DButils = require("./utils/DButils");
+
 
 router.get("/search", async(req, res, next) => {
     let data = []
@@ -33,6 +35,23 @@ router.get("/:team_id", async(req, res, next) => {
     }
 });
 
+
+router.get("/:team_id/matches", async(req, res, next) => {
+    try {
+        // console.log("in path")
+        // console.log(team_id);
+        // console.log(req.params.team_id);
+        const team_matches = (await DButils.execQuery(
+            `SELECT * FROM dbo.Matches
+             WHERE Home_Team_ID = '${req.params.team_id}'
+             OR Away_Team_ID = '${req.params.team_id}'`
+        )).recordsets[0]
+        res.status(200).send(team_matches);
+    } catch (error) {
+        next(error);
+    }
+});
+
 router.get("/:team_id/preview", async(req, res, next) => {
     try {
         const team_preview = await team_utils.get_team_preview(req.params.team_id);
@@ -41,5 +60,7 @@ router.get("/:team_id/preview", async(req, res, next) => {
         next(error);
     }
 });
+
+
 
 module.exports = router;
