@@ -58,8 +58,11 @@ router.post("/Login", async(req, res, next) => {
         }
         // Set cookie
         req.session.user_id = user.Username;
-        // return cookie
-        res.status(200).send(user.User_Role);
+        let response = {
+            role: user.User_Role,
+            photo: user.Photo_URL
+        }
+        res.status(200).send(response);
     } catch (error) {
         next(error);
     }

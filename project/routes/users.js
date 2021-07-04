@@ -16,6 +16,53 @@ router.use(async function(req, res, next) {
     }
 });
 
+router.get("/favoriteCoaches", async(req, res, next) => {
+    try {
+        const user_id = req.user_id;
+        const favorites = await users_utils.getAllFavorites(user_id, "Coach_ID", "Coaches");
+        if (favorites.length == 0)
+            res.status(404).send('no favorite coaches')
+        else
+            res.status(200).send(favorites)
+    } catch (error) {
+        next(error);
+    }
+})
+
+router.post("/favoriteCoaches", async(req, res, next) => {
+    try {
+        const user_id = req.user_id;
+        const coach_id = req.body.id;
+        const table_name = "Coaches"
+        const attribute_ID = "Coach_ID"
+        const status = await users_utils.markAsFavorite(user_id, coach_id, table_name, attribute_ID)
+        if (status == 0)
+            res.status(404).send(`coach doesn't exist!`)
+        else if (status == -1)
+            res.status(400).send('already in favorites!')
+        else
+            res.status(201).send('successfully added coach to favorites!')
+    } catch (error) {
+        next(error);
+    }
+})
+
+router.delete("/favoriteCoaches/:coach_id", async(req, res, next) => {
+    try {
+        const user_id = req.user_id;
+        const coach_id = req.params.coach_id
+        const table_name = "Coaches"
+        const attribute_ID = "Coach_ID"
+        const status = await users_utils.deleteFromFavorite(user_id, coach_id, table_name, attribute_ID)
+        if (status == 0)
+            res.status(404).send('coach is not in favorites!')
+        else
+            res.status(200).send('successfully deleted coach from favorites!')
+    } catch (error) {
+        next(error);
+    }
+})
+
 
 
 router.get("/favoriteMatches", async(req, res, next) => {

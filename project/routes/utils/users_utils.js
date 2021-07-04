@@ -1,7 +1,7 @@
 const DButils = require("./DButils");
 const teams_utils = require("./teams_utils");
 const player_utils = require("./players_utils");
-
+const coaches_utils = require("./coaches_utils");
 
 /**
  * Generic function to mark an object as favorite.
@@ -20,6 +20,8 @@ async function markAsFavorite(user_id, favorite_id, table_name, attribute_ID) {
         exist = await player_utils.get_player_preview(favorite_id);
     else if (table_name === "Teams")
         exist = await teams_utils.get_team_data(favorite_id, null);
+    else if (table_name === "Coaches")
+        exist = await coaches_utils.get_coach_preview(favorite_id);
     else {
         exist = (await DButils.execQuery(`SELECT ${attribute_ID} FROM dbo.${table_name} WHERE ${attribute_ID} = '${favorite_id}'`)).recordset[0];
         exist = (exist) ? exist.Match_ID : 0;
