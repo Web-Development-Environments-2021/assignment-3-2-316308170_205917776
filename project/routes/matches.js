@@ -75,6 +75,7 @@ router.post('/', async(req, res, next) => {
     // choose the home team's stadium and the current stage of league.
     const stadium = req.body.stadium || await (teams_utils.get_stadium_by_team_id(req.body.home_team_id));
     const stage = req.body.stage || (await league_utils.getLeagueDetails()).current_stage_id
+    const referee_id = req.body.referee_id || (Math.floor(Math.random()*6)+1)
     try {
         await DButils.execQuery(
                 "SELECT TOP 1 Match_ID FROM dbo.Matches ORDER BY Match_ID DESC"
@@ -87,7 +88,7 @@ router.post('/', async(req, res, next) => {
                 VALUES ('${match_id}',
                 '${req.body.home_team_id}',
                 '${req.body.away_team_id}',
-                '${req.body.referee_id}',
+                '${referee_id}',
                 '${req.body.date}',
                 '${req.body.hour}',
                 '${stadium}',
