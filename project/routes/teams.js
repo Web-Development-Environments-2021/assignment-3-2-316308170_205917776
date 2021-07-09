@@ -38,9 +38,6 @@ router.get("/:team_id", async(req, res, next) => {
 
 router.get("/:team_id/matches", async(req, res, next) => {
     try {
-        // console.log("in path")
-        // console.log(team_id);
-        // console.log(req.params.team_id);
         const team_matches = (await DButils.execQuery(
             `SELECT * FROM dbo.Matches
              WHERE Home_Team_ID = '${req.params.team_id}'

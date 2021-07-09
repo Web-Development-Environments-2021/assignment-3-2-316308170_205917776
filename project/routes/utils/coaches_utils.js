@@ -71,7 +71,6 @@ async function get_coach_preview(coach_id) {
     return {
         name: full_data.name,
         photo_path: full_data.photo_path,
-        position: full_data.position,
         team_name: full_data.team_name,
         team_id: full_data.team_id
     }

@@ -4,13 +4,6 @@ const players_utils = require("./utils/players_utils");
 const league_utils = require("./utils/league_utils");
 
 
-// router.use(async(req, res, next) => {
-//     if (league_utils.all_players == null)
-//         league_utils.all_players = await league_utils.get_all_players_in_season();
-//     next();
-// })
-
-
 router.get("/search", async(req, res, next) => {
     let keyword = req.query.keyword;
     try {

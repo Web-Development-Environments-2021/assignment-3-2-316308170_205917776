@@ -4,7 +4,7 @@ const DButils = require("./utils/DButils");
 const teams_utils = require("./utils/teams_utils")
 const league_utils = require("./utils/league_utils")
 
-router.get('/get_all_matches', async(req, res, next) => {
+router.get('/', async(req, res, next) => {
     try {
         const all_matches = (await DButils.execQuery(
             `SELECT Match_ID FROM dbo.Matches`
@@ -22,8 +22,7 @@ router.get('/:match_id', async(req, res, next) => {
         const data = (await DButils.execQuery(
             `SELECT * FROM dbo.Matches WHERE Match_ID = '${req.params.match_id}'`
         )).recordset
-        // delete data[0].Match_ID;
-        res.send(data);
+        res.status(200).send(data);
     } catch (error) {
         next(error);
     }

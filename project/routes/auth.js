@@ -80,17 +80,15 @@ router.post("/Logout", async(req, res, next) => {
 
 
 router.get("/", async function(req, res) {
-    console.log('in details');
     let league_details = await league_utils.getLeagueDetails();
     let upcoming_game_details = await league_utils.getUpcomingGame(league_details.current_stage_id);
     // get relevant details to display on main page.
     display_details = {
-            league_name: league_details.league_name,
-            season_name: league_details.current_season_name,
-            stage_name: league_details.current_stage_name,
-            upcoming_game: upcoming_game_details[0]
-        }
-        // send index.html to client.
+        league_name: league_details.league_name,
+        season_name: league_details.current_season_name,
+        stage_name: league_details.current_stage_name,
+        upcoming_game: upcoming_game_details[0]
+    }
     res.status(200).send(display_details)
 });
 module.exports = router;

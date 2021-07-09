@@ -11,7 +11,22 @@ tags:
   - name: coaches
   - name: teams
   - name: auth
+  - name: league
+
 paths:
+  /:
+    get:
+      tags:
+        - auth
+      summary: Send upcoming game on homepage.
+      responses:
+        '200':
+            description: 'fetch upcoming game details'
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/upcoming_game'    
+        
   /Login:
     post:
       tags:
@@ -27,6 +42,10 @@ paths:
       responses:
         '200':
           description: 'successful log in.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/login_response'    
         '401':
           description: 'username or password incorrect.'
   /Logout:
@@ -37,8 +56,16 @@ paths:
       responses:
         '200':
           description: 'successful log out.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/logout_success_response'
         '401':
           description: 'log out failed.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/logout_failure_response'
   /Register:
     post:
       tags:
@@ -53,8 +80,8 @@ paths:
       responses:
         '201':
           description:  Added new user to the system.
-        '400':
-          description:  Wrong input.
+        '409':
+          description:  Username or email taken.
           
   /users/favoriteMatches:
     get:
@@ -70,7 +97,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/favourite_matches'
         '404':
-          description: 'data not found.'
+          description: 'no favorite matches.'
     post:
       tags: 
         - users
@@ -84,11 +111,19 @@ paths:
               $ref: '#/components/schemas/favourite_add_match'
       responses:
         '201':
-          description: 'succesfully added match to favourites.'
+          description: succesfully added match to favourites.
+        '400':
+          description: already in favorites!
         '404':
-          description: 'data not found.'
+          description: match doesn't exist!
+
   /users/favoriteMatches/{match_id}:
-    parameters:
+    delete:
+      tags: 
+        - users
+      summary: delete match from favorites.
+      description: delete match from user's favorites given its id
+      parameters:
         - name: match_id
           required: true
           in: path
@@ -96,16 +131,11 @@ paths:
           schema:
             type: integer
             example: 8
-    delete:
-      tags: 
-        - users
-      summary: delete match from favorites.
-      description: delete match from user's favorites given its id
       responses:
         '200':
-          description: 'successful deleted match id from favorites.'
+          description: successful deleted match id from favorites.
         '404':
-          description: 'data not found.'
+          description: match is not in favorites!
 
   /users/favoritePlayers:
       get:
@@ -121,7 +151,7 @@ paths:
                 schema:
                   $ref: '#/components/schemas/favourite_players'
           '404':
-            description: 'data not found.'
+            description: no favorite players!
       post:
         tags: 
           - users
@@ -136,8 +166,11 @@ paths:
         responses:
           '201':
             description: 'succesfully added player to favourites.'
+          '400':
+            description: already in favorites!
           '404':
-            description: 'data not found.'
+            description: player doesn't exist!
+
   /users/favoritePlayers/{player_id}:
     delete:
       tags: 
@@ -154,9 +187,63 @@ paths:
             example: 26722
       responses:
         '200':
-          description: 'successful deleted player id from favorites.'
+          description: successful deleted player id from favorites.
         '404':
-          description: 'data not found.'
+          description: player is not in favorites!
+
+  /users/favoriteCoaches:
+      get:
+        tags: 
+          - users
+        summary: Returns all user's favorite coaches.
+        description: 'returns array of all favorite coaches ids'
+        responses:
+          '200':
+            description: 'successful fetched all favourite coaches ids.'
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/favourite_coaches'
+          '404':
+            description: no favorite coaches!
+      post:
+        tags: 
+          - users
+        summary: Add coach to favorites.
+        description: 'add coach to user favourites list.'
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/favourite_add_coach'
+        responses:
+          '201':
+            description: succesfully added coach to favourites.
+          '400':
+            description: already in favorites!
+          '404':
+            description: coach doesn't exist!
+
+  /users/favoriteCoaches/{coach_id}:
+    delete:
+      tags: 
+        - users
+      summary: delete coach from favorites.
+      description: delete coach from user's favorites given its id
+      parameters:
+        - name: coach_id
+          required: true
+          in: path
+          description: 'coach id'
+          schema:
+            type: integer
+            example: 457779
+      responses:
+        '200':
+          description: successful deleted coach id from favorites.
+        '404':
+          description: coach is not in favorites!
 
   /users/favoriteTeams:
         get:
@@ -172,7 +259,7 @@ paths:
                   schema:
                     $ref: '#/components/schemas/favourite_teams'
             '404':
-              description: 'data not found.'
+              description: no favorite teams!
         post:
           tags: 
             - users
@@ -186,9 +273,12 @@ paths:
                   $ref: '#/components/schemas/favourite_add_team'
           responses:
             '201':
-              description: 'succesfully added team to favourites.'
+              description: 'succesfully added team to favorites!'
+            '400':
+              description: already in favorites!
             '404':
-              description: 'data not found.'
+              description: Team doesn't exist!
+
   /users/favoriteTeams/{team_id}:
       delete:
         tags: 
@@ -207,8 +297,7 @@ paths:
           '200':
             description: 'successful deleted team id from favorites.'
           '404':
-            description: 'data not found.'
-
+            description: Team is not in favorites!
 
   /matches:
     put:
@@ -224,8 +313,7 @@ paths:
       responses:
         '201':
           description: 'Match updated.'
-        '400':
-          description: 'Wrong input.'
+  
     post:
       tags:
         - matches
@@ -238,9 +326,8 @@ paths:
               $ref: '#/components/schemas/new_match'
       responses:
         '201':
-          description: 'created game'
-        '404':
-          description: 'match not found'       
+          description: 'match created'
+     
   /matches/{match_id}:
     get:
       tags:
@@ -262,7 +349,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/game_details'
         '404':
-          description: 'game data not found.'
+          description: match doesn't exist
+
     delete:
       tags:
         - matches
@@ -278,9 +366,9 @@ paths:
         '200':
           description: 'successful deleted match.'
         '404':
-          description: 'match doesnt found.'      
+          description: match doesn't exist.  
 
-  /matches/representative/get_all_matches:
+  /matches/:
     get:
       tags: 
         - matches
@@ -293,8 +381,8 @@ paths:
               application/json:
                 schema:
                   $ref: '#/components/schemas/get_all_matches'
-        '500':
-          description: 'something is wrong'
+  
+
   /players/{player_id}/preview:
     get:
       tags:
@@ -317,6 +405,7 @@ paths:
                 $ref: '#/components/schemas/player_preview'
         '404':
           description: 'player preview not found.'  
+  
   /players/{player_id}/full_data:
     get:
       tags:
@@ -338,7 +427,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/player_full_data'
         '404':
-          description: 'player preview not found.'  
+          description: 'player full data not found.'  
           
   /coaches/{coach_id}/preview:
     get:
@@ -383,7 +472,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/coach_full_data'
         '404':
-          description: 'player preview not found.'  
+          description: 'coach full data not found.'  
   /teams/{team_id}:
     get:
       tags:
@@ -411,7 +500,46 @@ paths:
                 $ref: '#/components/schemas/team_data'
         '404':
           description: 'team not found.'  
-          
+  /teams/{team_id}/matches:
+    get:
+      tags:
+        - teams
+      description: get all matches of provided team
+      parameters:
+      - name: team_id
+        required: true
+        in: path
+        schema:
+          type: integer
+          example: 85
+      responses:
+        '200':
+          description: 'successful fetched team matches.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/team_matches'
+               
+  /teams/{team_id}/preview:
+    get:
+      tags:
+        - teams
+      description: get team preview
+      parameters:
+      - name: team_id
+        required: true
+        in: path
+        schema:
+          type: integer
+          example: 85
+      responses:
+        '200':
+          description: 'successful fetched team preview.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/team_preview'
+  
   /players/search:
     get:
       tags: 
@@ -433,7 +561,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/players_ids'
         '404':
-          description: 'no match found.'
+          description: 'no matching player found.'
   /coaches/search:
     get:
       tags: 
@@ -455,7 +583,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/coaches_ids'
         '404':
-          description: 'no match found.'
+          description: 'no matching coach found.'
   /teams/search:
     get:
       tags: 
@@ -477,9 +605,41 @@ paths:
               schema:
                 $ref: '#/components/schemas/teams_ids'
         '404':
-          description: 'no match found.'
+          description: 'no matching team found.'
 
-    
+  /league/:
+    get:
+      tags:
+        - league
+      description: get all relevant data on league
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/league_data'
+          
+  /league/stages/{stage_id}:
+    get:
+      tags:
+      - league
+      description: get stage name by id.
+      parameters:
+        - name: stage_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 77453568
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/stage_data'
+        '404':
+          description: 'no such stage'
+
 
 components:
   schemas:
@@ -497,7 +657,33 @@ components:
         password:
           type: string
           example: g@1ThePro
-
+    login_response:
+      type: object
+      properties:
+        role:
+          type: string
+          example: User
+        photo:
+          type: string
+          example: http://www.example.com/photo_ID
+    logout_success_response:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: logout succeeded
+    logout_failure_response:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: logout failed
     user_register:
       type: object
       properties:
@@ -507,29 +693,27 @@ components:
           maxLength: 8
           description: 'using only letters'
           example: shiloari
-          
         first_name:
           type: string
           example: Ariel
-        
         last_name:
           type: string
           example: Shilo
-          
         country:
           type: string
           example: Israel
-
         email:
           type: string
           example: qqq@qqq.com
-
         password:
           type: string
           minLength: 5
           maxLength: 10
           description: password must include at least 1 number and at least 1 special character.
           example: g@1ThePro
+        photo_url:
+          type: string
+          example: http://example.com/photo_url
     
     upcoming_game:
       type: object
@@ -559,7 +743,7 @@ components:
     favourite_add_match:
       type: object
       properties:
-          match_id:
+          id:
                 type: integer
                 description: match id
                 example: 8
@@ -572,13 +756,24 @@ components:
                 type: integer
                 description: player id
                 example: 26722
+    
     favourite_add_player:
       type: object
       properties:
-          player_id:
+          id:
                 type: integer
                 description: player id
                 example: 26722
+    
+    favourite_add_coach:
+      type: object
+      properties:
+          id:
+            type: integer
+            description: coach id
+            example: 457779
+    
+
     favourite_teams:
       type: array
       items:
@@ -587,14 +782,25 @@ components:
                 type: integer
                 description: team id
                 example: 85
+    
     favourite_add_team:
       type: object
       properties:
-          team_id:
+          id:
                 type: integer
                 description: team id
                 example: 85
-                
+
+    favourite_coaches:
+      type: array
+      items:
+        properties:
+          id:
+            type: integer
+            description: coach id
+            example: 457779
+
+
     game_details:
       type: object
       properties:
@@ -610,6 +816,10 @@ components:
           type: string
           description: 'match date'
           example: '14/05/2021'
+        Hour:
+          type: string
+          description: 'match hour'
+          example: '18:00'
         Score:
           type: string
           description: 'match result (optional).'
@@ -631,10 +841,18 @@ components:
     player_preview:
       type: object
       properties:
+        id:
+          type: integer
+          description: 'players id'
+          example: 26722
         name:
           type: string
           description: 'players full name'
           example: Stephan Maigaard Andersen
+        team_id:
+          type: integer
+          description: 'teams id'
+          example: 85
         team_name:
           type: string
           description: 'team name'
@@ -643,10 +861,11 @@ components:
           type: string
           description: 'photo path'
           example:  https://cdn.sportmonks.com/images/soccer/players/2/26722.png
-        position_number:
+        position:
           type: integer
           description: 'position on field number'
           example: 1
+    
     coach_preview:
       type: object
       properties:
@@ -662,22 +881,35 @@ components:
             type: string
             description: 'team name'
             example: SønderjyskE
+        team_id:
+            type: integer
+            description: 'coaches team id'
+            example: 85
+
     player_full_data:
         type: object
         properties:
-          full_name:
+          id:
+            type: integer
+            description: player id
+            example: 26722
+          name:
             type: string
             description: 'players full name'
             example: Stephan Maigaard Andersen
-          team_name:
+          team_id:
             type: integer
+            description: 'player team id'
+            example: 85
+          team_name:
+            type: string
             description: 'team name'
             example: København
           photo_path:
             type: string
             description: 'photo path'
             example: https://cdn.sportmonks.com/images/soccer/players/2/26722.png
-          position_number:
+          position:
             type: integer
             description: 'position on field number'
             example: 1
@@ -709,6 +941,10 @@ components:
     coach_full_data:
         type: object
         properties:
+          id:
+            type: integer
+            description: 'coach id'
+            example: 457779
           name:
             type: string
             description: 'coaches full name'
@@ -721,6 +957,10 @@ components:
             type: string
             description: 'team name'
             example: SønderjyskE
+          team_id:
+            type: integer
+            description: 'coach team id'
+            example: 939
           common_name:
             type: string
             description: 'coach nickname'
@@ -741,6 +981,9 @@ components:
     update_match:
       type: object
       properties:
+        finished:
+          type: boolean
+          description: 'game finish status'
         match_id:
           type: integer
           description: "Match id to update."
@@ -755,7 +998,6 @@ components:
           items:
             type: string
             example: 04/06/20212 19:45 78, Goal - Stephan Maigaard Andersen 
-          
           
     new_match:
       type: object
@@ -780,10 +1022,18 @@ components:
           type: integer
           description: referee's id
           example: 1
+        stadium:
+          type: string
+          description: stadium hosts the game. by default - home team's stadium
+          example: Parken
+        stage:
+          type: integer
+          example: 77453568
+    
     team_data:
       type: object
       properties:
-        players_data:
+        team:
           type: array
           items:
            type: object
@@ -804,7 +1054,7 @@ components:
                 type: string
                 description: team's name
                 example: København      
-        coach_data:
+        coach:
           description: coach's data.
           type: object
           properties:
@@ -813,10 +1063,14 @@ components:
               example: Jess Thorup
             photo_path:
               type: string
-              example: null
+              example: http://example.com/photo_url
             team_name:
               type: string
               example: København           
+        logo:
+          type: string
+          description: 'team logo path'
+          example: http://example.com/photo_url
         matches:
           type: array
           items:
@@ -834,12 +1088,15 @@ components:
               Match_Date:
                 type: string
                 example: 03/06/2021
+              Hour:
+                type: string
+                example: '18:00'
               Stadium:
                 type: string
                 example: Parken
               Stage:
                 type: integer
-                example: Group Stage
+                example: 77453568
               Score:
                 type: string
                 example: 3:1
@@ -890,3 +1147,204 @@ components:
                 type: string
                 description: team name
                 example: 'Maccabi Haifa'
+    
+    team_preview:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 85
+        name:
+          type: string
+          example: København
+        logo_path:
+          type: string
+          example: http://example.com/logo_path
+        short_code: 
+          type: string
+          example: KOB
+        founded:
+          type: integer
+          example: 1992
+    
+    team_matches:
+      type: array
+      items:
+        type: object
+        properties:
+          Match_ID:
+            type: integer
+            example: 2
+          Home_Team_ID:
+            type: integer
+            example: 85
+          Away_Team_ID:
+            type: integer
+            example: 939
+          Match_Date:
+            type: string
+            example: 03/06/2021
+          Hour:
+            type: string
+            example: '18:00'
+          Stadium:
+            type: string
+            example: Parken
+          Stage:
+            type: integer
+            example: 77453568
+          Score:
+            type: string
+            example: 3:1
+          EventBook:
+            type: array
+            items:
+              type: string
+              example: 04/06/20212 19:45 78, Goal - Stephan Maigaard Andersen 
+          Referee_ID:
+            type: integer
+            example: 2
+    
+    stage_data:
+      type: object
+      description: stage data
+      properties:
+        id:
+          type: integer
+          example: 77453568
+        name:
+          type: string
+          example: Group Stage
+
+
+    league_data:
+      type: array
+      items:
+        properties:
+          all_teams:  
+            type: array
+            items:
+              description: all teams
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 85
+                name:
+                  type: string
+                  example: Kobenhavn
+                short_code:
+                  type: string
+                  example: KOB
+                founded:
+                  type: integer
+                  example: 1992
+                logo_path:
+                  type: string
+                  example: http://example.com/photo_url
+                stadium:
+                  type: string
+                  example: Parken
+          all_coaches:
+            type: array
+            items:
+              description: all coaches
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: 'coach id'
+                  example: 457779
+                name:
+                  type: string
+                  description: 'coaches full name'
+                  example: Glen Riddersholm
+                photo_path:
+                  type: string
+                  description: 'photo path'
+                  example: https://cdn.sportmonks.com/images/soccer/players/5/459045.png
+                team_name:
+                  type: string
+                  description: 'team name'
+                  example: SønderjyskE
+                team_id:
+                  type: integer
+                  description: 'coach team id'
+                  example: 939
+                common_name:
+                  type: string
+                  description: 'coach nickname'
+                  example: G. Riddersholm
+                birthdate:
+                  type: string
+                  description: 'coaches birth date'
+                  example: 26/04/1972
+                birth_country:
+                  type: string
+                  description: 'coaches origin country'
+                  example: Denmark
+                nationality:
+                  type: string
+                  description: 'coaches nationality'
+                  example: Denmark
+          all_players:
+            type: array
+            items:
+              type: object
+              description: all players
+              properties:
+                id:
+                  type: integer
+                  description: player id
+                  example: 26722
+                name:
+                  type: string
+                  description: 'players full name'
+                  example: Stephan Maigaard Andersen
+                team_id:
+                  type: integer
+                  description: 'player team id'
+                  example: 85
+                team_name:
+                  type: string
+                  description: 'team name'
+                  example: København
+                photo_path:
+                  type: string
+                  description: 'photo path'
+                  example: https://cdn.sportmonks.com/images/soccer/players/2/26722.png
+                position:
+                  type: integer
+                  description: 'position on field number'
+                  example: 1
+                common_name:
+                  type: string
+                  description: 'player nickname'
+                  example: S. Andersen
+                birthdate:
+                  type: string
+                  description: 'players birth date'
+                  example: 26/11/1981
+                birth_country:
+                  type: string
+                  description: 'players origin country'
+                  example: Denmark
+                nationality:
+                  type: string
+                  description: 'players nationality'
+                  example: Denmark
+                height:
+                  type: string
+                  description: 'players height in cm'
+                  example: '190 cm'
+                weight:
+                  type: string
+                  description: 'players weight in kg'
+                  example: '80 kg'
+          
+
+                
+
+                  
+
+              
