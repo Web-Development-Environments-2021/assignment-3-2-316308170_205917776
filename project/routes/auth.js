@@ -81,7 +81,11 @@ router.post("/Logout", async(req, res, next) => {
 
 router.get("/", async function(req, res) {
     let league_details = await league_utils.getLeagueDetails();
-    let upcoming_game_details = await league_utils.getUpcomingGame(league_details.current_stage_id);
+    try {
+        var upcoming_game_details = await league_utils.getUpcomingGame(league_details.current_stage_id);
+    } catch (error) {
+        var upcoming_game_details = [undefined]
+    }
     // get relevant details to display on main page.
     display_details = {
         league_name: league_details.league_name,
