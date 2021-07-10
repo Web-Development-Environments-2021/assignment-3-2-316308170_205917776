@@ -115,7 +115,7 @@ async function get_all_teams_in_league() {
  */
 async function getUpcomingGame(stage_id) {
     upcoming_game = (await DButils.execQuery(
-        `SELECT TOP 1 * FROM dbo.Matches WHERE Stage = '${stage_id}' 
+        `SELECT TOP 1 * FROM dbo.Matches WHERE Stage = '${stage_id}' and Score is NULL 
         ORDER BY Match_Date`
     )).recordset;
     return upcoming_game;
